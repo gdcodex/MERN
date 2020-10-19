@@ -1,20 +1,14 @@
-import React from "react";
+import React, {useEffect} from "react";
 import ReactDOM from "react-dom";
 import "./sidedrawer.css";
-import {motion, AnimatePresence} from 'framer-motion'
+import {motion} from 'framer-motion'
 
 function Sidedrawer(props) {
+
   const content = 
-  <AnimatePresence exitBeforeEnter>
-  <motion.aside className="side-drawer"
- initial={ {x:-100}}
-  animate={ {x:0}}
-  transition={{ duration:1, ease:'easeInOut'}}
-  exit={{ x:-100,transition:{ease:'linear',duration:1}}}
-  >
+  <aside id="x" style={{display:(props.open?'block':'none')}} className={props.onClick? 'side-drawer':'open'}>
   {props.children}
-  </motion.aside>
-  </AnimatePresence>;
+  </aside>;
   return ReactDOM.createPortal(content, document.getElementById("drawer-hook"));
 }
 
