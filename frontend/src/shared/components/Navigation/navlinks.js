@@ -12,7 +12,7 @@ function Navlinks(props) {
         </NavLink>
       </li>
       <li>
-        <NavLink to="/ul/places" onClick={props.onClick}>
+        <NavLink to="/u1/places" onClick={props.onClick}>
           All Places
         </NavLink>
       </li>

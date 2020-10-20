@@ -17,7 +17,7 @@ function Placelist(props) {
   }
 
   return (
-    <ul className="place-liist">
+    <ul className="place-list ">
       {props.items.map((place) => (
         <Placeitem
           key={place.id}
