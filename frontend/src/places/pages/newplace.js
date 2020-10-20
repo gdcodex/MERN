@@ -1,10 +1,13 @@
 import React from 'react'
 
+import Input from '../../shared/components/formelements/input'
+import './newplace.css'
+
 function Newplace() {
     return (
-        <div>
-            This is new place
-        </div>
+      <form  className="place-form">
+          <Input element ='input' type='text' label='Title' />
+      </form>
     )
 }
 

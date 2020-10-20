@@ -1,7 +1,7 @@
 import React, {useEffect} from "react";
 import ReactDOM from "react-dom";
 import "./sidedrawer.css";
-import {motion} from 'framer-motion'
+
 
 function Sidedrawer(props) {
 
