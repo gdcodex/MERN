@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Button from "../../shared/components/formelements/Button";
 import Input from "../../shared/components/formelements/input";
+import Card from "../../shared/components/UIElements/Card";
 import { useForm } from "../../shared/hooks/form-hooks";
 import {
   VALIDATOR_MINLENGTH,
@@ -25,18 +26,17 @@ const DUMMY = [
     creator: "u1",
   },
   {
-    id: "p1",
-    title: "Skyring",
-    description: "Times passes 5 years slower relative to 1 hr on earth",
-    imageUrl:
-      "https://cdn.pixabay.com/photo/2014/08/15/11/29/beach-418742_1280.jpg",
-    address: "77 Massachusetts Ave, Cambridge, MA 02139, United States",
-    location: {
-      lat: 42.360091,
-      lng: -71.0963487,
+    id:'p2',
+    title:'Rainbow',
+    description:'As  Vibrant as my classroom.',
+    imageUrl:'https://cdn.pixabay.com/photo/2014/08/15/11/29/beach-418742_1280.jpg',
+    address:"77 Massachusetts Ave, Cambridge, MA 02139, United States",
+    location:{
+        lat: 42.360091,
+        lng: -71.0963487
     },
-    creator: "u2",
-  },
+    creator:'u1'
+}
 ];
 function Updateplace() {
   const placeId = useParams().placeId;
@@ -57,6 +57,7 @@ function Updateplace() {
     
   const identifiedPlace = DUMMY.find((p) => p.id === placeId);
 useEffect(()=>{
+  if(identifiedPlace){
     setInputData({
        title: {
            value: identifiedPlace.title,
@@ -67,14 +68,18 @@ useEffect(()=>{
            isValid: true,
        },
     },true)
-
-},[setInputData,identifiedPlace])
+    
+  }
+  
+  },[setInputData,identifiedPlace])
 
 
   if (!identifiedPlace) {
     return (
       <div className="center">
+      <Card>
         <h2>Couldn't find place</h2>
+      </Card>
       </div>
     );
   }
