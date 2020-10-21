@@ -10,6 +10,7 @@ import Newplace from "./places/pages/newplace";
 import Userplaces from './places/pages/userplaces'
 import Mainnavigation from './shared/components/Navigation/mainnavigation'
 import Updateplace from "./places/pages/updateplace";
+import Auth from "./user/pages/auth";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
     <main>
       <Switch>
         <Route path="/" exact component={Users} />
+        <Route path="/auth" exact component={Auth} />
         <Route path='/:userId/places' component={Userplaces}/>
         <Route path="/places/new" exact component={Newplace} />
         <Route path="/places/:placeId" exact component={Updateplace} />
