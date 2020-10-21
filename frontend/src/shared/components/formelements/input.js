@@ -29,7 +29,7 @@ function Input(props) {
   });
 
   const { id, onInput } = props;
-  const { value,isValid  } = inputState;
+  const { value, isValid } = inputState;
   useEffect(() => {
     onInput(id, value, isValid);
   }, [id, value, isValid, onInput]);
