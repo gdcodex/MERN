@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Button from "../../shared/components/formelements/Button";
 import Input from "../../shared/components/formelements/input";
 import Card from "../../shared/components/UIElements/Card";
+import { AuthContext } from "../../shared/context/auth-context";
 import { useForm } from "../../shared/hooks/form-hooks";
 import {
   VALIDATOR_EMAIL,
@@ -10,6 +11,7 @@ import {
 } from "../../shared/Util/validators";
 
 function Auth() {
+  const auth = useContext(AuthContext)
   const [isLoggedInMode, setisLoggedInMode] = useState(true);
 
   const [formState, inputHandler, setInputData] = useForm(
@@ -84,7 +86,7 @@ function Auth() {
           errorText="Enter a valid email"
           onInput={inputHandler}
         />
-        <Button type="submit" disabled={!formState.isValid}>
+        <Button type="submit"  onClick={isLoggedInMode? auth.login:null} disabled={!formState.isValid}>
           {isLoggedInMode ? "LOGIN" : "SIGNUP"}
         </Button>
         <Button inverse onClick={switchMode}>
