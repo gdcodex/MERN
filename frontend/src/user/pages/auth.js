@@ -9,6 +9,7 @@ import {
   VALIDATOR_MINLENGTH,
   VALIDATOR_REQUIRE,
 } from "../../shared/Util/validators";
+import {Redirect} from 'react-router-dom'
 
 function Auth() {
   const auth = useContext(AuthContext)
@@ -30,6 +31,7 @@ function Auth() {
 
   const onSubmitHandler = (event) => {
     event.preventDefault();
+    // if(isLoggedInMode)auth.login()
     console.log(formState);
   };
   const switchMode = () => {
@@ -51,6 +53,7 @@ function Auth() {
     }
     setisLoggedInMode((p) => !p);
   };
+  // if(auth.isLoggedIn) return <Redirect to='/'/>
   return (
     <Card className="place-form">
       <h2>{isLoggedInMode ? "LOGIN" : "SIGNUP"}</h2>
@@ -86,10 +89,10 @@ function Auth() {
           errorText="Enter a valid email"
           onInput={inputHandler}
         />
-        <Button type="submit"  onClick={isLoggedInMode? auth.login:null} disabled={!formState.isValid}>
+        <Button type="submit" onClick={isLoggedInMode? auth.login:null}   disabled={!formState.isValid}>
           {isLoggedInMode ? "LOGIN" : "SIGNUP"}
         </Button>
-        <Button inverse onClick={switchMode}>
+        <Button  inverse onClick={switchMode}>
           Go to {isLoggedInMode ? "SIGNUP" : "LOGIN"}
         </Button>
       </form>
@@ -98,3 +101,4 @@ function Auth() {
 }
 
 export default Auth;
+

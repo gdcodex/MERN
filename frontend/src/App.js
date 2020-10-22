@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {
   BrowserRouter as Router,
   Switch,
@@ -23,19 +23,37 @@ function App() {
   const logout =useCallback(()=>{
     setisLoggedIn(false)
   },[])
+//so that login state is not lost on refresh
+useEffect(()=>{
+    const reslocal =localStorage.getItem("mysong");
+    if(reslocal){
+        setisLoggedIn(JSON.parse(reslocal));
+    }
+},[]);
+useEffect(()=>{
+    localStorage.setItem("mysong", JSON.stringify(isLoggedIn));
+});
+
+  let routes;
   if(isLoggedIn){
-    const routes=(
-      <>
+     routes=(
+      <Switch>
           <Route path="/" exact component={Users} />
-      </>
+          <Route path="/:userId/places" exact component={Userplaces} />
+          <Route path="/places/new" exact component={Newplace} />
+            <Route path="/places/:placeId" exact component={Updateplace} />
+            <Redirect to="/"  />
+      </Switch>
     )
   }
   else{
     routes=(
-      <>
+      <Switch>
         <Route path="/" exact component={Users} />
         <Route path="/:userId/places" component={Userplaces} />
-      </>
+        <Route path="/auth" exact component={Auth} />
+        <Redirect to="/auth" />
+      </Switch>
     )
   }
 
@@ -44,14 +62,11 @@ function App() {
       <Router>
         <Mainnavigation />
         <main>
-          <Switch>
+        
           
-            <Route path="/auth" exact component={Auth} />
+          {routes}
           
-            <Route path="/places/new" exact component={Newplace} />
-            <Route path="/places/:placeId" exact component={Updateplace} />
-            <Redirect to="/" />
-          </Switch>
+       
         </main>
       </Router>
     </AuthContext.Provider>
