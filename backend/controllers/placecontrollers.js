@@ -12,6 +12,16 @@ let DUMMY_PLACES = [
     },
     address: "69 Street, London",
     creator: "u1",
+  },{
+    id: "p2",
+    title: "MIT",
+    description: "Hella this is the greatest university",
+    location: {
+      lat: 70.46,
+      lng: 54.45,
+    },
+    address: "69 Street, London",
+    creator: "u1",
   },
 ];
 
@@ -27,17 +37,17 @@ const getPlaceById = (req, res, next) => {
   res.json({ place });
 };
 
-const getPlaceByUserId = (req, res, next) => {
+const getPlacesByUserId = (req, res, next) => {
   console.log("GET request in Users");
   const userId = req.params.uid;
-  const user = DUMMY_PLACES.find((p) => p.creator === userId);
+  const places = DUMMY_PLACES.filter((p) => p.creator === userId);
 
-  if (!user) {
+  if (places.length===0) {
     return next(
       new httpError("Couldn't find place for the provided user id", 404)
     );
   }
-  res.json({ user });
+  res.json({ places });
 };
 
 const createPlace = (req, res, next) => {
@@ -76,7 +86,7 @@ const deletePlace = (req, res, next) => {
 //exports
 module.exports = {
   getPlaceById,
-  getPlaceByUserId,
+  getPlacesByUserId,
   createPlace,
   updatePlace,
   deletePlace,

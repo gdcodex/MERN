@@ -3,6 +3,7 @@ const bodyPaser = require("body-parser");
 const httpError = require("./models/errors");
 //routes import
 const placesRoutes = require("./routes/placesroutes");
+const userRoutes = require("./routes/userroutes");
 //express call
 const app = express();
 
@@ -11,6 +12,7 @@ app.use(bodyPaser.json())
 
 //routes use
 app.use("/api/places", placesRoutes);
+app.use("/api/users", userRoutes);
 
 
 
