@@ -15,7 +15,11 @@ const router = express.Router();
 //routes
 router.get("/:pid", getPlaceById);
 router.get("/users/:uid", getPlacesByUserId); //multiple middlewares can be added which will be executed from left
-router.patch("/:pid", updatePlace); //to right
+router.patch(
+  "/:pid",
+  [check("title").notEmpty(), check("description").isLength({ min: 5 })],
+  updatePlace
+); //to right
 router.delete("/:pid", deletePlace);
 router.post(
   "/",
