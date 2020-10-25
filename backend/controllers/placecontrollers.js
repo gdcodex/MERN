@@ -1,6 +1,7 @@
 const httpError = require("../models/errors");
 const { v4: uuid } = require("uuid");
 const {validationResult} =require('express-validator')
+const getCoordinates = require('../utility/location')
 //data
 let DUMMY_PLACES = [
   {
@@ -51,17 +52,25 @@ const getPlacesByUserId = (req, res, next) => {
   res.json({ places });
 };
 
-const createPlace = (req, res, next) => {
+const createPlace = async (req, res, next) => {
   const errors = validationResult(req)
   if(!errors.isEmpty()){
-    throw new httpError("Please fill all the fields properly",422)
+   next(new httpError("Please fill all the fields properly",422))
   }
-  const { title, description, coordinates, address, creator } = req.body;
+  const { title, description, address, creator } = req.body;
+
+  let coordinates;
+  try{
+     coordinates =await getCoordinates(address)
+  }
+  catch(error){
+    return next(error)
+  }
   const createdPlace = {
     id: uuid(),
     title,
     description,
-    location: coordinates,
+    location:coordinates,
     address,
     creator,
   };
@@ -88,6 +97,9 @@ const updatePlace = (req, res, next) => {
 
 const deletePlace = (req, res, next) => {
   const placeId = req.params.pid;
+  if(!DUMMY_PLACES.find((p) => p.id === placeId)){
+    throw new httpError("Place with the given id doesn't exist",404)
+  }
   DUMMY_PLACES = DUMMY_PLACES.filter((p) => p.id !== placeId);
   res.status(200).json({message:"the place has been deleted"})
 };
