@@ -1,5 +1,5 @@
 const express = require('express')
-const func = require('./mongo')
+const func = require('./mongoose')
 const bodyParser = require('body-parser')
 
 const app = express()
