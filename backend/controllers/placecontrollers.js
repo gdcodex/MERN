@@ -140,12 +140,25 @@ const updatePlace = async (req, res, next) => {
   res.status(200).json({ place : place.toObject({getters: true}) });
 };
 
-const deletePlace = (req, res, next) => {
+const deletePlace = async (req, res, next) => {
   const placeId = req.params.pid;
-  if (!DUMMY_PLACES.find((p) => p.id === placeId)) {
-    throw new httpError("Place with the given id doesn't exist", 404);
+
+  let place;
+  try{
+    place = await Place.findById(placeId)
   }
-  DUMMY_PLACES = DUMMY_PLACES.filter((p) => p.id !== placeId);
+  catch(error){
+    console.log(error)
+    return next(new httpError("couldn't find the place to be deleted",500))
+  }
+  try{
+    await place.remove()
+  }
+  catch(error){
+    console.log(error)
+    return next(new httpError("couldn't delete the place",500))
+  }
+ 
   res.status(200).json({ message: "the place has been deleted" });
 };
 
