@@ -30,7 +30,7 @@ const signUp = async (req,res,next)=>{
        existingUser = await User.findOne({email})
     }
     catch(error){
-        return next( new httpError("failed to signup",500))
+        return next( new httpError("Something went wrong",500))
     }
 
     if(existingUser){
@@ -57,17 +57,25 @@ const signUp = async (req,res,next)=>{
 
 }
 
-const logIn = (req,res,next) => {
+const logIn = async (req,res,next) => {
     const {email,password} = req.body
-    const identifiedUser = DUMMY_USERS.find(p=>p.email===email)
-    if(!identifiedUser || identifiedUser.password !== password){
+    
+    let existingUser
+    try{
+       existingUser = await User.findOne({email})
+    }
+    catch(error){
+        return next( new httpError("something went wrong",500))
+    }
+
+    if(!existingUser || existingUser.password !== password){
         return next(new httpError("Enter the correct info",401))
     }
     res.json({message:'logged in'})
 
 }
 
-module.exports={
+module.exports={                                       
     getUsers,
     signUp,
     logIn
