@@ -1,4 +1,5 @@
 const httpError = require("../models/errors");
+const User = require('../models/usersschema')
 const {validationResult} = require('express-validator')
 const {v4:uuid} = require('uuid')
 
@@ -17,25 +18,42 @@ const getUsers = (req,res,next)=>{
 }
 
 
-const signUp = (req,res,next)=>{
+const signUp = async (req,res,next)=>{
     const errors = validationResult(req)
     if(!errors.isEmpty()){
-        throw new httpError("Enter the fields correctly",422)
+        return next(new httpError("Enter the fields correctly",422))
     }
-    const {name,email,password} = req.body
-    const hasUser = DUMMY_USERS.find(u=>u.email===email)
-    if(hasUser){
-        return next( new httpError("Email already registered",401))
+    const {name,email,password,places} = req.body
+    
+    let existingUser
+    try{
+       existingUser = await User.findOne({email})
+    }
+    catch(error){
+        return next( new httpError("failed to signup",500))
     }
 
-    const createdUser = {
-        id:uuid(),
+    if(existingUser){
+        return next(new httpError("Email already registered",422))
+    }
+
+   
+   const user = new User({
         name,
         email,
-        password
+        password,
+        image:"https://hips.hearstapps.com/digitalspyuk.cdnds.net/18/44/1540890998-twd-905-jld-0621-05297-rt.jpg",
+        places
+    })
+    try{
+      await  user.save()
     }
-    DUMMY_USERS.push(createdUser)
-    res.status(201).json({user:createdUser})
+    catch(error){
+        console.log(error)
+        return next(new httpError("Sign Up failed",500))
+    }
+  
+    res.status(201).json({user:user.toObject({getters:true})})
 
 }
 

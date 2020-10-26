@@ -30,6 +30,9 @@ let DUMMY_PLACES = [
 ];
 
 //route functions
+
+
+//getting place(s)
 const getPlaceById = async (req, res, next) => {
   console.log("GET Place by Id");
   const placeId = req.params.pid; //{pid:'p1'}
@@ -73,6 +76,10 @@ const getPlacesByUserId = async (req, res, next) => {
   res.json({ places: places.map((p) => p.toObject({ getters: true })) });
 };
 
+
+
+
+
 //createPlace
 const createPlace = async (req, res, next) => {
   const errors = validationResult(req);
@@ -107,6 +114,10 @@ const createPlace = async (req, res, next) => {
   res.status(201).json({ place: createdPlace });
 };
 
+
+
+
+
 //updatePlace
 const updatePlace = async (req, res, next) => {
   const errors = validationResult(req);
@@ -140,6 +151,10 @@ const updatePlace = async (req, res, next) => {
   res.status(200).json({ place : place.toObject({getters: true}) });
 };
 
+
+
+
+//deleting place
 const deletePlace = async (req, res, next) => {
   const placeId = req.params.pid;
 
