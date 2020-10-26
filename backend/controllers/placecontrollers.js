@@ -29,28 +29,51 @@ let DUMMY_PLACES = [
 ];
 
 //route functions
-const getPlaceById = (req, res, next) => {
+const getPlaceById = async (req, res, next) => {
   console.log("GET Place by Id");
   const placeId = req.params.pid; //{pid:'p1'}
-  const place = DUMMY_PLACES.find((p) => p.id === placeId);
 
-  if (!place) {
-    return next(new httpError("Couldn't find place for the provided id", 404));
-  }
-  res.json({ place });
+  let place;
+ try{
+    place = await Place.findById(placeId)
+ }
+ catch(error){
+   console.log(error)
+   return next(new httpError("Couldn't find any place with the given id",500))
+ }
+
+ if (!place) {
+  return next(
+    new httpError("Couldn't find place for the provided id", 404)
+  );
+ }
+
+  res.json({ place:place.toObject({getters:true}) });
 };
 
-const getPlacesByUserId = (req, res, next) => {
+
+
+
+
+const getPlacesByUserId = async (req, res, next) => {
   console.log("GET request in Users");
   const userId = req.params.uid;
-  const places = DUMMY_PLACES.filter((p) => p.creator === userId);
+ 
+  let places;
+  try{
+    places = await Place.find({creator: userId})
+  }
+  catch(error){
+    console.log(error)
+    return next(new httpError("Couldn't find any place with the given user id",500))
+  }
 
   if (places.length===0) {
     return next(
       new httpError("Couldn't find place for the provided user id", 404)
     );
   }
-  res.json({ places });
+  res.json({ places:places.map(p=>p.toObject({getters:true})) });
 };
 
 
