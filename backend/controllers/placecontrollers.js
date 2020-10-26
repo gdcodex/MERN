@@ -2,6 +2,7 @@ const httpError = require("../models/errors");
 const { v4: uuid } = require("uuid");
 const {validationResult} =require('express-validator')
 const getCoordinates = require('../utility/location')
+const Place = require('../models/placeschema')
 //data
 let DUMMY_PLACES = [
   {
@@ -52,11 +53,19 @@ const getPlacesByUserId = (req, res, next) => {
   res.json({ places });
 };
 
+
+
+
+//createPlace
 const createPlace = async (req, res, next) => {
+
+
   const errors = validationResult(req)
   if(!errors.isEmpty()){
    return next(new httpError("Please fill all the fields properly",422))
   }
+
+
   const { title, description, address, creator } = req.body;
 
   let coordinates;
@@ -66,18 +75,32 @@ const createPlace = async (req, res, next) => {
   catch(error){
     return next(error)
   }
-  const createdPlace = {
-    id: uuid(),
+  const createdPlace =new Place( {
     title,
     description,
     location:coordinates,
     address,
-    creator,
-  };
-  DUMMY_PLACES.push(createdPlace);
+    image:"https://news.bitcoin.com/wp-content/uploads/2019/03/apocalypse.png",
+    creator
+  });
+
+  try{
+    await createdPlace.save()
+  }
+  catch(error){
+    console.log(error)
+   return  next(new httpError("Couldn't save place to the database",500))
+  }
 
   res.status(201).json({ place: createdPlace });
 };
+
+
+
+
+
+
+
 
 const updatePlace = (req, res, next) => {
   const errors = validationResult(req)

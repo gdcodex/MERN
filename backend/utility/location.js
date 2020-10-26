@@ -14,7 +14,8 @@ async function getCoordsForAddress(address) {
     throw new httpError("Enter the valid address", 422);
   }
 
-  const coordinates = data
+  // const coordinates = data
+  const coordinates = {lat:45.55,lng:-70.80}
   return coordinates;
 }
 
