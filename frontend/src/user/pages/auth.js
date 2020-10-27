@@ -35,9 +35,9 @@ function Auth() {
 
   const onSubmitHandler = async (event) => {
     event.preventDefault();
+    setisLoading(true);
     if (!isLoggedInMode) {
       try {
-        setisLoading(true);
         const response = await fetch("http://localhost:5000/api/users/signup", {
           method: "POST",
           headers: {
@@ -62,7 +62,32 @@ function Auth() {
         setisError(err.message);
       }
     } else {
-      auth.login();
+
+      try {
+        const response = await fetch("http://localhost:5000/api/users/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: formState.inputs.email.value,
+            password: formState.inputs.password.value,
+          }),
+        });
+        const responseData = await response.json();
+        if (!response.ok) {
+          throw new Error(responseData.message);
+        }
+        auth.login();
+        console.log(responseData);
+        setisLoading(false);
+      } catch (err) {
+        console.log(err.message);
+        setisLoading(false);
+        setisError(err.message);
+      }
+
+     
     }
   };
   const switchMode = () => {

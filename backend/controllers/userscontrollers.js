@@ -65,9 +65,12 @@ const logIn = async (req,res,next) => {
     catch(error){
         return next( new httpError("something went wrong",500))
     }
+    if(!existingUser){
+        return next(new httpError("Email id not registered, please Sing Up first !",401))
+    }
 
-    if(!existingUser || existingUser.password !== password){
-        return next(new httpError("Enter the correct info",401))
+    if( existingUser.password !== password){
+        return next(new httpError("Your email and password didn't match. Please try again !",401))
     }
     res.json({message:'logged in'})
 
