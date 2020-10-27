@@ -112,6 +112,7 @@ function Auth() {
               validators={[VALIDATOR_REQUIRE()]}
               errorText="Please enter a name."
               onInput={inputHandler}
+              isSuccess={isSuccess}
             />
           )}
 
@@ -123,6 +124,7 @@ function Auth() {
             validators={[VALIDATOR_EMAIL()]}
             errorText="Enter a valid email"
             onInput={inputHandler}
+            isSuccess={isSuccess}
           />
 
           <Input
@@ -133,6 +135,7 @@ function Auth() {
             validators={[VALIDATOR_MINLENGTH(6)]}
             errorText="Enter a valid password"
             onInput={inputHandler}
+            isSuccess={isSuccess}
           />
           <Button type="submit" disabled={!formState.isValid}>
             {isLoggedInMode ? "LOGIN" : "SIGNUP"}

@@ -11,6 +11,12 @@ const inputReducer = (state, action) => {
         value: action.val,
         isValid: validate(action.val, action.validators),
       };
+      case "RESET":
+        return {
+          ...state,
+          value: action.val,
+          isValid: action.isValid
+        };  
     case "TOUCHED":
       return {
         ...state,
@@ -33,6 +39,16 @@ function Input(props) {
   useEffect(() => {
     onInput(id, value, isValid);
   }, [id, value, isValid, onInput]);
+  
+  useEffect(()=>{
+    dispatch({
+      type:"RESET",
+      val:"",
+      isValid: true
+
+    })
+  },[props.isSuccess])
+  
 
   const changehandler = (event) => {
     dispatch({
