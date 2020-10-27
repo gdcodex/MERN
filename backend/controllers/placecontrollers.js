@@ -1,37 +1,11 @@
 const httpError = require("../models/errors");
-const { v4: uuid } = require("uuid");
+const mongoose = require("mongoose");
 const { validationResult } = require("express-validator");
 const getCoordinates = require("../utility/location");
 const Place = require("../models/placeschema");
-//data
-let DUMMY_PLACES = [
-  {
-    id: "p1",
-    title: "MIT",
-    description: "Hella this is the greatest university",
-    location: {
-      lat: 70.46,
-      lng: 54.45,
-    },
-    address: "69 Street, London",
-    creator: "u1",
-  },
-  {
-    id: "p2",
-    title: "MIT",
-    description: "Hella this is the greatest university",
-    location: {
-      lat: 70.46,
-      lng: 54.45,
-    },
-    address: "69 Street, London",
-    creator: "u1",
-  },
-];
+const User = require("../models/usersschema"); //to establish connection between users and places
 
-//route functions
-
-
+////route functions
 //getting place(s)
 const getPlaceById = async (req, res, next) => {
   console.log("GET Place by Id");
@@ -61,6 +35,8 @@ const getPlacesByUserId = async (req, res, next) => {
   let places;
   try {
     places = await Place.find({ creator: userId });
+    //userWithPlaces = await User.findById(userId).populate('places) alternative method
+    // places-->userWithPlaces.places
   } catch (error) {
     console.log(error);
     return next(
@@ -75,10 +51,6 @@ const getPlacesByUserId = async (req, res, next) => {
   }
   res.json({ places: places.map((p) => p.toObject({ getters: true })) });
 };
-
-
-
-
 
 //createPlace
 const createPlace = async (req, res, next) => {
@@ -103,9 +75,22 @@ const createPlace = async (req, res, next) => {
     image: "https://news.bitcoin.com/wp-content/uploads/2019/03/apocalypse.png",
     creator,
   });
+  //check if user exists
+  let user;
+  try {
+    user = await User.findById(creator);
+  } catch (error) {
+    return next(new httpError("Something went wrong", 500));
+  }
+  if (!user) return next(new httpError("Sorry you are not logged in", 404));
 
   try {
-    await createdPlace.save();
+    const sess = await mongoose.startSession();
+    sess.startTransaction();
+    await createdPlace.save({ session: sess });
+    user.places.push(createdPlace); //push adds place's id to user
+    await user.save({ session: sess });
+    await sess.commitTransaction(); //only at this point the docs will be saved
   } catch (error) {
     console.log(error);
     return next(new httpError("Couldn't save place to the database", 500));
@@ -113,10 +98,6 @@ const createPlace = async (req, res, next) => {
 
   res.status(201).json({ place: createdPlace });
 };
-
-
-
-
 
 //updatePlace
 const updatePlace = async (req, res, next) => {
@@ -148,32 +129,34 @@ const updatePlace = async (req, res, next) => {
     );
   }
 
-  res.status(200).json({ place : place.toObject({getters: true}) });
+  res.status(200).json({ place: place.toObject({ getters: true }) });
 };
-
-
-
 
 //deleting place
 const deletePlace = async (req, res, next) => {
   const placeId = req.params.pid;
 
   let place;
-  try{
-    place = await Place.findById(placeId)
+  try {
+    place = await Place.findById(placeId).populate("creator");
+  } catch (error) {
+    console.log(error);
+    return next(new httpError("Something gone wrong", 500));
   }
-  catch(error){
-    console.log(error)
-    return next(new httpError("couldn't find the place to be deleted",500))
+  if (!place) return next(new httpError("The place doesn't exist", 404));
+
+  try {
+    const sess = await mongoose.startSession();
+    sess.startTransaction();
+    await place.remove({ session: sess });
+    place.creator.places.pull(place); //connected established by pupilate method/ user ->place.creator
+    await place.creator.save({ session: sess });
+    await sess.commitTransaction();
+  } catch (error) {
+    console.log(error);
+    return next(new httpError("couldn't delete the place", 500));
   }
-  try{
-    await place.remove()
-  }
-  catch(error){
-    console.log(error)
-    return next(new httpError("couldn't delete the place",500))
-  }
- 
+
   res.status(200).json({ message: "the place has been deleted" });
 };
 

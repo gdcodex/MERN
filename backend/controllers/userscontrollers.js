@@ -1,16 +1,6 @@
 const httpError = require("../models/errors");
 const User = require('../models/usersschema')
 const {validationResult} = require('express-validator')
-const {v4:uuid} = require('uuid')
-
-const DUMMY_USERS = [
-    {
-        id:"u2",
-        name:"geremsa daimary",
-        email:"gerema@gdai.com",
-        password:"123gdai"
-    }
-]
 
 
 const getUsers = async (req,res,next)=>{
@@ -31,7 +21,7 @@ const signUp = async (req,res,next)=>{
     if(!errors.isEmpty()){
         return next(new httpError("Enter the fields correctly",422))
     }
-    const {name,email,password,places} = req.body
+    const {name,email,password} = req.body
     
     let existingUser
     try{
@@ -51,7 +41,7 @@ const signUp = async (req,res,next)=>{
         email,
         password,
         image:"https://hips.hearstapps.com/digitalspyuk.cdnds.net/18/44/1540890998-twd-905-jld-0621-05297-rt.jpg",
-        places
+        places: []
     })
     try{
       await  user.save()

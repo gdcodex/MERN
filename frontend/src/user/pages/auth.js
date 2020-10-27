@@ -1,5 +1,7 @@
 import React, { useContext, useState } from "react";
 import Button from "../../shared/components/formelements/Button";
+import ErrorModal from "../../shared/components/UIElements/ErrorModal";
+import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
 import Input from "../../shared/components/formelements/input";
 import Card from "../../shared/components/UIElements/Card";
 import { AuthContext } from "../../shared/context/auth-context";
@@ -9,11 +11,13 @@ import {
   VALIDATOR_MINLENGTH,
   VALIDATOR_REQUIRE,
 } from "../../shared/Util/validators";
-import {Redirect} from 'react-router-dom'
 
 function Auth() {
-  const auth = useContext(AuthContext)
+  const auth = useContext(AuthContext);
   const [isLoggedInMode, setisLoggedInMode] = useState(true);
+  const [isLoading, setisLoading] = useState(false);
+  const [isError, setisError] = useState(false);
+  const [isSuccess, setisSuccess] = useState(false);
 
   const [formState, inputHandler, setInputData] = useForm(
     {
@@ -29,76 +33,117 @@ function Auth() {
     false
   );
 
-  const onSubmitHandler = (event) => {
+  const onSubmitHandler = async (event) => {
     event.preventDefault();
-    // if(isLoggedInMode)auth.login()
-    console.log(formState);
+    if (!isLoggedInMode) {
+      try {
+        setisLoading(true);
+        const response = await fetch("http://localhost:5000/api/users/signup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: formState.inputs.name.value,
+            email: formState.inputs.email.value,
+            password: formState.inputs.password.value,
+          }),
+        });
+        const responseData = await response.json();
+        if (!response.ok) {
+          throw new Error(responseData.message);
+        }
+        console.log(responseData);
+        setisLoading(false);
+        setisSuccess(true);
+      } catch (err) {
+        console.log(err.message);
+        setisLoading(false);
+        setisError(err.message);
+      }
+    } else {
+      auth.login();
+    }
   };
   const switchMode = () => {
     if (isLoggedInMode) {
       setInputData(
         {
-         ...formState.inputs,
+          ...formState.inputs,
           name: { value: "", isValid: false },
         },
         false
       );
-    } else  {
+    } else {
       setInputData(
-        {...formState.inputs,
-          name: undefined,
-        },
-        formState.inputs.email.isValid &&  formState.inputs.password.isValid
+        { ...formState.inputs, name: undefined },
+        formState.inputs.email.isValid && formState.inputs.password.isValid
       );
     }
     setisLoggedInMode((p) => !p);
   };
-  // if(auth.isLoggedIn) return <Redirect to='/'/>
+
   return (
-    <Card className="place-form">
-      <h2>{isLoggedInMode ? "LOGIN" : "SIGNUP"}</h2>
-      <form onSubmit={onSubmitHandler}>
-        {!isLoggedInMode && (
+    <>
+      {isError && (
+        <ErrorModal
+          error={isError}
+          header="An Error Occurred"
+          onClear={() => setisError(null)}
+        />
+      )}
+      {isSuccess && (
+        <ErrorModal
+          error="User Succesfully Created"
+          header="Congrtulations !!"
+          onClear={() => setisSuccess(false)}
+        />
+      )}
+      <Card className="place-form">
+        {isLoading && <LoadingSpinner asOverlay />}
+        <h2>{isLoggedInMode ? "LOGIN" : "SIGNUP"}</h2>
+        <form onSubmit={onSubmitHandler}>
+          {!isLoggedInMode && (
+            <Input
+              id="name"
+              element="input"
+              type="text"
+              label="Name"
+              validators={[VALIDATOR_REQUIRE()]}
+              errorText="Please enter a name."
+              onInput={inputHandler}
+            />
+          )}
+
           <Input
-            id="name"
+            id="email"
             element="input"
-            type="text"
-            label="Name"
-            validators={[VALIDATOR_REQUIRE]}
-            errorText="Please enter a name."
+            type="email"
+            label="Email"
+            validators={[VALIDATOR_EMAIL()]}
+            errorText="Enter a valid email"
             onInput={inputHandler}
           />
-        )}
 
-        <Input
-          id="email"
-          element="input"
-          type="email"
-          label="Email"
-          validators={[VALIDATOR_REQUIRE, VALIDATOR_EMAIL]}
-          errorText="Enter a valid email"
-          onInput={inputHandler}
-        />
-
-        <Input
-          id="password"
-          element="input"
-          type="password"
-          label="Password"
-          validators={[VALIDATOR_MINLENGTH(6)]}
-          errorText="Enter a valid email"
-          onInput={inputHandler}
-        />
-        <Button type="submit" onClick={isLoggedInMode? auth.login:null}   disabled={!formState.isValid}>
-          {isLoggedInMode ? "LOGIN" : "SIGNUP"}
-        </Button>
-        <Button  inverse onClick={switchMode}>
+          <Input
+            id="password"
+            element="input"
+            type="password"
+            label="Password"
+            validators={[VALIDATOR_MINLENGTH(6)]}
+            errorText="Enter a valid password"
+            onInput={inputHandler}
+          />
+          <Button type="submit" disabled={!formState.isValid}>
+            {isLoggedInMode ? "LOGIN" : "SIGNUP"}
+          </Button>
+        </form>
+        <Button inverse onClick={switchMode}>
           Go to {isLoggedInMode ? "SIGNUP" : "LOGIN"}
         </Button>
-      </form>
-    </Card>
+      </Card>
+    </>
   );
 }
 
 export default Auth;
-
