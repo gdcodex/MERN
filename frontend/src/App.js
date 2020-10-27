@@ -5,7 +5,7 @@ import {
   Route,
   Redirect,
 } from "react-router-dom";
-import Users from "./user/pages/users";
+import Users from "./user/pages/userss";
 import Newplace from "./places/pages/newplace";
 import Userplaces from "./places/pages/userplaces";
 import Mainnavigation from "./shared/components/Navigation/mainnavigation";
