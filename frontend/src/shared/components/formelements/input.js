@@ -17,6 +17,12 @@ const inputReducer = (state, action) => {
           value: action.val,
           isValid: action.isValid
         };  
+        case "INITIAL":
+        return {
+          ...state,
+          value: action.val,
+          isValid: action.isValid
+        };   
     case "TOUCHED":
       return {
         ...state,
@@ -48,6 +54,14 @@ function Input(props) {
 
     })
   },[props.isSuccess])
+  useEffect(()=>{
+    dispatch({
+      type:"INITIAL",
+      val:"",
+      isValid: false
+
+    })
+  },[])
   
 
   const changehandler = (event) => {
