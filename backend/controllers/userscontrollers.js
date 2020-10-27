@@ -72,7 +72,7 @@ const logIn = async (req,res,next) => {
     if( existingUser.password !== password){
         return next(new httpError("Your email and password didn't match. Please try again !",401))
     }
-    res.json({message:'logged in'})
+    res.json({user:existingUser.toObject({getters:true})})
 
 }
 

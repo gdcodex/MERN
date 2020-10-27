@@ -9,8 +9,7 @@ export const useHttp = () => {
         url,
         method = "GET",
         headers = {},
-        body = null,
-        extra=()=>{}
+        body = null
     ) => {
         setisLoading(true)
         try{
@@ -22,7 +21,6 @@ export const useHttp = () => {
             
             setisSuccess(true)
             setisLoading(false)
-            extra()
             return responseData
         }
         catch(err){

@@ -15,13 +15,16 @@ import { AuthContext } from "./shared/context/auth-context";
 
 function App() {
   const [isLoggedIn, setisLoggedIn] = useState(false);
+  const [userId, setuserId] = useState(null);
 
-  const login =useCallback(()=>{
+  const login =useCallback((uid)=>{
     setisLoggedIn(true)
+    setuserId(uid)
   },[])
 
   const logout =useCallback(()=>{
     setisLoggedIn(false)
+    setuserId(null)
   },[])
 //so that login state is not lost on refresh
 useEffect(()=>{
@@ -58,7 +61,7 @@ useEffect(()=>{
   }
 
   return (
-    <AuthContext.Provider value={{isLoggedIn,login,logout}}>
+    <AuthContext.Provider value={{isLoggedIn,login,logout,userId}}>
       <Router>
         <Mainnavigation />
         <main>

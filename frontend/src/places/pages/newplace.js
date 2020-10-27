@@ -1,4 +1,5 @@
-import React, { useCallback, useReducer } from "react";
+import React, { useContext } from "react";
+import { AuthContext } from "../../shared/context/auth-context";
 
 import Input from "../../shared/components/formelements/input";
 import Button from "../../shared/components/formelements/Button";
@@ -13,6 +14,7 @@ import ErrorModal from "../../shared/components/UIElements/ErrorModal";
 import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
 
 const NewPlace = () => {
+  const UID = useContext(AuthContext)
   const {
     isLoading,
     isError,
@@ -39,22 +41,27 @@ const NewPlace = () => {
     },
     false
   );
-
-  const onSubmitHandler = (event) => {
+ 
+  const onSubmitHandler = async(event) => {
     event.preventDefault();
-     sendRequest(
-      "http://localhost:5000/api/places",
-      "POST",
-      {
-        "Content-Type": "application/json",
-      },
-      JSON.stringify({
-        title: formState.inputs.title.value,
-        description: formState.inputs.description.value,
-        address: formState.inputs.address.value,
-        creator: "5f96e0f6a80fa8b1ecde4143",
-      })
-    );
+    try{
+      await sendRequest(
+       "http://localhost:5000/api/places",
+       "POST",
+       {
+         "Content-Type": "application/json",
+       },
+       JSON.stringify({
+         title: formState.inputs.title.value,
+         description: formState.inputs.description.value,
+         address: formState.inputs.address.value,
+         creator: UID.userId,
+       })
+     );
+    }
+    catch(err){
+
+    }
     console.log(formState);
   };
 

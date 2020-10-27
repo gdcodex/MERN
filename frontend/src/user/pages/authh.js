@@ -39,7 +39,7 @@ function Auth() {
     false
   );
 
-  const onSubmitHandler = (event) => {
+  const onSubmitHandler = async(event) => {
     event.preventDefault();
 
     if (!isLoggedInMode) {
@@ -56,17 +56,26 @@ function Auth() {
         })
       );
     } else {
-      sendRequest(
-        "http://localhost:5000/api/users/login",
-        "POST",
+      try{
+       const response = await sendRequest(
+           "http://localhost:5000/api/users/login",
+           "POST",
+   
+           { "Content-Type": "application/json" },
+           JSON.stringify({
+             email: formState.inputs.email.value,
+             password: formState.inputs.password.value,
+           })
+         );
+         const responseData = response.json();
+         if(!response.ok){
+           throw new Error("something went wrong")
+         }
+         auth.login(responseData.user.id)
+      }
+      catch(err){
 
-        { "Content-Type": "application/json" },
-        JSON.stringify({
-          email: formState.inputs.email.value,
-          password: formState.inputs.password.value,
-        }),
-        auth.login
-      );
+      }
     }
   };
 
