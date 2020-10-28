@@ -1,9 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Button from "../../shared/components/formelements/Button";
 import Input from "../../shared/components/formelements/input";
 import Card from "../../shared/components/UIElements/Card";
+import ErrorModal from "../../shared/components/UIElements/ErrorModal";
+import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
 import { useForm } from "../../shared/hooks/form-hooks";
+import { useHttp } from "../../shared/hooks/http-hook";
 import {
   VALIDATOR_MINLENGTH,
   VALIDATOR_REQUIRE,
@@ -11,114 +14,104 @@ import {
 
 import "./placeform.css";
 
-const DUMMY = [
-  {
-    id: "p1",
-    title: "Skyring",
-    description: "Times passes 5 years slower relative to 1 hr on earth",
-    imageUrl:
-      "https://cdn.pixabay.com/photo/2018/05/09/01/00/greece-3384386_1280.jpg",
-    address: "77 Massachusetts Ave, Cambridge, MA 02139, United States",
-    location: {
-      lat: 42.360091,
-      lng: -71.0963487,
-    },
-    creator: "u1",
-  },
-  {
-    id:'p2',
-    title:'Rainbow',
-    description:'As  Vibrant as my classroom.',
-    imageUrl:'https://cdn.pixabay.com/photo/2014/08/15/11/29/beach-418742_1280.jpg',
-    address:"77 Massachusetts Ave, Cambridge, MA 02139, United States",
-    location:{
-        lat: 42.360091,
-        lng: -71.0963487
-    },
-    creator:'u1'
-}
-];
 function Updateplace() {
   const placeId = useParams().placeId;
+  const { isLoading, isError, resetError, sendRequest } = useHttp();
+  const [loadedPlace, setloadedPlace] = useState(null);
 
-  const [formState, inputHandler,setInputData] = useForm(
-      {
+  const [formState, inputHandler, setInputData] = useForm(
+    {
       title: {
-        value: '',
+        value: "",
         isValid: true,
-    },
+      },
       description: {
-        value: '',
+        value: "",
         isValid: true,
-    },
+      },
     },
     true
-    );
-    
-  const identifiedPlace = DUMMY.find((p) => p.id === placeId);
-useEffect(()=>{
-  if(identifiedPlace){
-    setInputData({
-       title: {
-           value: identifiedPlace.title,
-           isValid: true,
-       },
-         description: {
-           value: identifiedPlace.description,
-           isValid: true,
-       },
-    },true)
-    
-  }
-  
-  },[setInputData,identifiedPlace])
+  );
+
+  useEffect(() => {
+    sendRequest(`http://localhost:5000/api/places/${placeId}`)
+      .then((data) => {
+        setloadedPlace(data.place);
+        console.log(loadedPlace.title);
+        setInputData(
+          {
+            title: {
+              value: data.place.title,
+              isValid: true,
+            },
+            description: {
+              value: data.place.description,
+              isValid: true,
+            },
+          },
+          true
+        );
+      })
+      .catch((err) => console.log(err));
+  },[placeId,sendRequest,setInputData]);
 
 
-  if (!identifiedPlace) {
+  if (isLoading) {
     return (
       <div className="center">
-      <Card>
-        <h2>Couldn't find place</h2>
-      </Card>
+        <LoadingSpinner asOverlay />
       </div>
     );
   }
-  const onSubmitHandler =event=>{
-      event.preventDefault();
-      console.log(formState)
+
+  if (!loadedPlace && !isError) {
+    return (
+      <div className="center">
+        <Card>
+          <h2>Couldn't find place</h2>
+        </Card>
+      </div>
+    );
   }
-  if( !formState.inputs.title.value ){
-      return <h2>Loading...</h2>
-  }
- 
+  const onSubmitHandler = (event) => {
+    event.preventDefault();
+    console.log(formState);
+  };
+
   return (
-     
-    <form onSubmit={onSubmitHandler} className="place-form">
-      <Input
-        id="title"
-        element="input"
-        label="Title"
-        type="text"
-        validators={[VALIDATOR_REQUIRE()]}
-        errorText="Please enter a valid title."
-        onInput={inputHandler}
-        initialValid={formState.inputs.title.isValid}
-        initialValue={formState.inputs.title.value}
-      />
-      <Input
-        id="description"
-        element="textarea"
-        label="Description"
-        validators={[VALIDATOR_MINLENGTH(5)]}
-        errorText="Please enter a valid description(min. 5 characters)."
-        onInput={inputHandler}
-        initialValid={formState.inputs.description.isValid}
-        initialValue={formState.inputs.description.value}
-      />
-      <Button type="submit" disabled={!formState.isValid}>
-        UPDATE PLACE
-      </Button>
-    </form>
+    <>
+      {isError && (
+        <ErrorModal header="Error" error={isError} onClear={resetError} />
+      )}
+      {!isLoading && loadedPlace && (
+        <form onSubmit={onSubmitHandler} className="place-form">
+          <Input
+            id="title"
+            element="input"
+            label="Title"
+            type="text"
+            validators={[VALIDATOR_REQUIRE()]}
+            errorText="Please enter a valid title."
+            onInput={inputHandler}
+            initialValid={true}
+            initialValue={loadedPlace.title}
+          />
+          <Input
+            id="description"
+            element="textarea"
+            label="Description"
+            validators={[VALIDATOR_MINLENGTH(5)]}
+            errorText="Please enter a valid description(min. 5 characters)."
+            onInput={inputHandler}
+            initialValid={true}
+            initialValue={loadedPlace.description}
+          />
+          <Button type="submit" disabled={!formState.isValid}>
+            UPDATE PLACE
+          </Button>
+        </form>
+      )}
+    </>
   );
 }
 

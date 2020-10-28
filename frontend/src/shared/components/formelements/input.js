@@ -46,22 +46,22 @@ function Input(props) {
     onInput(id, value, isValid);
   }, [id, value, isValid, onInput]);
   
-  useEffect(()=>{
-    dispatch({
-      type:"RESET",
-      val:"",
-      isValid: true
+  // useEffect(()=>{
+  //   dispatch({
+  //     type:"RESET",
+  //     val:"",
+  //     isValid: true
 
-    })
-  },[props.isSuccess])
-  useEffect(()=>{
-    dispatch({
-      type:"INITIAL",
-      val:"",
-      isValid: false
+  //   })
+  // },[props.isSuccess])
+  // useEffect(()=>{
+  //   dispatch({
+  //     type:"INITIAL",
+  //     val:"",
+  //     isValid: false
 
-    })
-  },[])
+  //   })
+  // },[])
   
 
   const changehandler = (event) => {

@@ -16,7 +16,7 @@ function Users() {
     }).catch(err=>{
         console.log(err)
     })
-  }, []);
+  }, [sendRequest]);
   return (
     <>
       {isLoading && (

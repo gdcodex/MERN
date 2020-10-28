@@ -14,7 +14,7 @@ function Userplaces() {
     sendRequest(`http://localhost:5000/api/places/users/${userId}`)
       .then((data) => {setloadedPlaces(data.places);console.log(data.places)})
       .catch((err) => console.log(err));
-  }, []);
+  }, [sendRequest,userId]);
 
  
   return (
