@@ -15,8 +15,8 @@ function Navlinks(props) {
       </li>
       {authC.isLoggedIn && 
       <li>
-        <NavLink to="/u1/places" onClick={props.onClick}>
-          All Places
+        <NavLink to={`/${authC.userId}/places`} onClick={props.onClick}>
+         My Places
         </NavLink>
       </li>
       }

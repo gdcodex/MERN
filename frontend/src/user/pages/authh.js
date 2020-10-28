@@ -39,7 +39,7 @@ function Auth() {
     false
   );
 
-  const onSubmitHandler = async(event) => {
+  const onSubmitHandler = (event) => {
     event.preventDefault();
 
     if (!isLoggedInMode) {
@@ -56,8 +56,8 @@ function Auth() {
         })
       );
     } else {
-      try{
-       const response = await sendRequest(
+     
+        sendRequest(
            "http://localhost:5000/api/users/login",
            "POST",
    
@@ -66,17 +66,10 @@ function Auth() {
              email: formState.inputs.email.value,
              password: formState.inputs.password.value,
            })
-         );
-         const responseData = response.json();
-         if(!response.ok){
-           throw new Error("something went wrong")
-         }
-         auth.login(responseData.user.id)
+         ).then(data=>auth.login(data.user.id)).catch(err=>console.log(err))
       }
-      catch(err){
-
-      }
-    }
+    
+    
   };
 
   const switchMode = () => {

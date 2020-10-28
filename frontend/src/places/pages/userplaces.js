@@ -1,41 +1,40 @@
-import React from 'react'
-import {useParams} from 'react-router-dom'
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import ErrorModal from "../../shared/components/UIElements/ErrorModal";
+import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
+import { useHttp } from "../../shared/hooks/http-hook";
 
-import Placelist from '../components/placelist'
+import Placelist from "../components/placelist";
 
 function Userplaces() {
+  const [loadedPlaces, setloadedPlaces] = useState(null);
+  const { isLoading, isError, resetError, sendRequest } = useHttp();
 
-    const DUMMY=[
-        {
-        id:'p1',
-        title:'Skyring',
-        description:'Times passes 5 years slower relative to 1 hr on earth',
-        imageUrl:'https://cdn.pixabay.com/photo/2018/05/09/01/00/greece-3384386_1280.jpg',
-        address:"77 Massachusetts Ave, Cambridge, MA 02139, United States",
-        location:{
-            lat: 42.360091,
-            lng: -71.0963487
-        },
-        creator:'u1'
-    },
-        {
-        id:'p2',
-        title:'Rainbow',
-        description:'As  Vibrant as my classroom.',
-        imageUrl:'https://cdn.pixabay.com/photo/2014/08/15/11/29/beach-418742_1280.jpg',
-        address:"77 Massachusetts Ave, Cambridge, MA 02139, United States",
-        location:{
-            lat: 42.360091,
-            lng: -71.0963487
-        },
-        creator:'u1'
-    }
-]
-    const userId =useParams().userId;
-    const filtered_DUMMY = DUMMY.filter(item=>item.creator===userId)
-    return (
-       <Placelist items={filtered_DUMMY}/>
-    )
+  const userId = useParams().userId;
+  useEffect(() => {
+    sendRequest(`http://localhost:5000/api/places/users/${userId}`)
+      .then((data) => setloadedPlaces(data.places))
+      .catch((err) => console.log(err));
+  }, []);
+
+ 
+  return (
+    <>
+       {isLoading && (
+        <div className="center">
+          <LoadingSpinner asOverlay />
+        </div>
+      )}
+      {isError && (
+        <ErrorModal
+          error={isError}
+          header="An Error Occurred"
+          onClear={resetError}
+        />
+      )}
+     {loadedPlaces && <Placelist items={loadedPlaces} />}
+    </>
+  );
 }
 
-export default Userplaces
+export default Userplaces;

@@ -40,7 +40,7 @@ const getPlacesByUserId = async (req, res, next) => {
   } catch (error) {
     console.log(error);
     return next(
-      new httpError("Couldn't find any place with the given user id", 500)
+      new httpError("Server error", 500)
     );
   }
 

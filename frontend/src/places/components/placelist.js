@@ -23,8 +23,8 @@ function Placelist(props) {
         <Placeitem
           key={place.id}
           id={place.id}
-          image={place.imageUrl}
-          title={place.ttitle}
+          image={place.image}
+          title={place.title}
           description={place.description}
           address={place.address}
           creatorId={place.creator}
