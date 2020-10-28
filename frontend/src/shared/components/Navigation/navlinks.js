@@ -5,7 +5,7 @@ import { AuthContext } from "../../context/auth-context";
 import "./navlinks.css";
 
 function Navlinks(props) {
-  const authC = useContext(AuthContext)
+  const authC = useContext(AuthContext);
   return (
     <ul className="nav-links">
       <li>

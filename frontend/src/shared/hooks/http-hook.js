@@ -24,7 +24,7 @@ export const useHttp = () => {
             return responseData
         }
         catch(err){
-            console.log(err.message);
+            console.log(err);
             setisError(err.message)
             setisLoading(false)
 

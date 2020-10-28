@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect, useContext } from "react";
+import { useHistory, useParams } from "react-router-dom";
 import Button from "../../shared/components/formelements/Button";
 import Input from "../../shared/components/formelements/input";
 import Card from "../../shared/components/UIElements/Card";
 import ErrorModal from "../../shared/components/UIElements/ErrorModal";
 import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
+import { AuthContext } from "../../shared/context/auth-context";
 import { useForm } from "../../shared/hooks/form-hooks";
 import { useHttp } from "../../shared/hooks/http-hook";
 import {
@@ -15,6 +16,8 @@ import {
 import "./placeform.css";
 
 function Updateplace() {
+  const userId = useContext(AuthContext);
+  const history = useHistory();
   const placeId = useParams().placeId;
   const { isLoading, isError, resetError, sendRequest } = useHttp();
   const [loadedPlace, setloadedPlace] = useState(null);
@@ -37,7 +40,6 @@ function Updateplace() {
     sendRequest(`http://localhost:5000/api/places/${placeId}`)
       .then((data) => {
         setloadedPlace(data.place);
-        console.log(loadedPlace.title);
         setInputData(
           {
             title: {
@@ -75,7 +77,16 @@ function Updateplace() {
   }
   const onSubmitHandler = (event) => {
     event.preventDefault();
-    console.log(formState);
+    sendRequest(`http://localhost:5000/api/places/${placeId}`,
+    "PATCH",
+    {'Content-Type':'application/json'},
+    JSON.stringify({
+      title:formState.inputs.title.value,
+      description: formState.inputs.description.value
+    })
+    ).then(data=>history.push('/' + userId.userId + '/places')
+    ).catch(err=>console.log(err))
+    
   };
 
   return (
