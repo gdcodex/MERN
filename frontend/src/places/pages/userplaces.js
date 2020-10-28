@@ -13,10 +13,12 @@ function Userplaces() {
   useEffect(() => {
     sendRequest(`http://localhost:5000/api/places/users/${userId}`)
       .then((data) => {setloadedPlaces(data.places);console.log(data.places)})
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err,'sss'));
   }, [sendRequest,userId]);
 
- 
+ const onDelete =(deleted)=>{
+   setloadedPlaces(prevPlaces=>prevPlaces.filter(p=>p.id!==deleted));
+ }
   return (
     <>
        {isLoading && (
@@ -25,7 +27,7 @@ function Userplaces() {
         </div>
       )}
      
-     {loadedPlaces && <Placelist items={loadedPlaces} />}
+     {loadedPlaces && <Placelist items={loadedPlaces} onDelete={onDelete}/>}
     </>
   );
 }

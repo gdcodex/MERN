@@ -66,7 +66,7 @@ function Auth() {
              email: formState.inputs.email.value,
              password: formState.inputs.password.value,
            })
-         ).then(data=>auth.login(data.user.id)).catch(err=>console.log(err))
+         ).then(data=>{auth.login(data.user.id); console.log('then')}).catch(err=>console.log(auth.userId))
       }
     
     

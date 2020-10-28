@@ -1,20 +1,55 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 
 import Card from "../../shared/components/UIElements/Card";
 import Button from "../../shared/components/formelements/Button";
 import Modal from "../../shared/components/UIElements/modal";
 import Map from "../../shared/components/UIElements/map";
 import "./placeitem.css";
+import { useHttp } from "../../shared/hooks/http-hook";
+import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
+import ErrorModal from '../../shared/components/UIElements/ErrorModal'
+import { AuthContext } from "../../shared/context/auth-context";
 
 function Placeitem(props) {
   const [showMap, setshowMap] = useState(false);
   const [showDelete, setshowDelete] = useState(false);
+  const { isLoading, isError, resetError, sendRequest } = useHttp();
+  const auth =useContext(AuthContext);
 
   const openMapHandler = () => setshowMap(true);
   const closeMapHandler = () => setshowMap(false);
   const openDelete = () => setshowDelete(true);
   const closeDelete = () => setshowDelete(false);
-  const confirmDelete = () =>{console.log("deleting...");setshowDelete(false)};
+  const confirmDelete = async () => {
+    console.log("deleting...");
+    setshowDelete(false);
+    // sendRequest(`http://localhost:5000/api/plces/${props.id}`, "DELETE").then(data => {
+    //     console.log('then:',data)
+    //     props.onDelete(props.id);
+    //   }
+    // ).catch(err=>
+    //   console.log('kaise nhi')
+    // )
+
+  try{
+    await sendRequest(
+      `http://localhost:5000/api/places/${props.id}`, "DELETE"
+    )
+    props.onDelete(props.id);
+  }
+  catch(err){
+    console.log('kuch nhi')
+  }
+}
+
+ 
+  if(isError){
+    return (
+      <>
+        <ErrorModal header="An error occurred" error={isError} onClear={resetError}/>
+      </>
+    )
+  }
 
   return (
     <>
@@ -31,15 +66,28 @@ function Placeitem(props) {
         </div>
       </Modal>
 
-      <Modal show={showDelete} onCancel={closeDelete} header="Alert !" foooterClass="place-item__modal-actions" footer={<>
-        <Button inverse onClick={closeDelete}>CANCEL</Button>
-        <Button danger onClick={confirmDelete}>PROCEED</Button>
-      </>}>
+      <Modal
+        show={showDelete}
+        onCancel={closeDelete}
+        header="Alert !"
+        foooterClass="place-item__modal-actions"
+        footer={
+          <>
+            <Button inverse onClick={closeDelete}>
+              CANCEL
+            </Button>
+            <Button danger onClick={confirmDelete}>
+              PROCEED
+            </Button>
+          </>
+        }
+      >
         <p>Are you sure? It can't be undone later</p>
       </Modal>
 
       <li className="place-item">
         <Card className="place-item__content">
+        {isLoading && <LoadingSpinner asOverlay/>}
           <div className="place-item__image">
             <img src={props.image} alt={props.title} />
           </div>
@@ -52,8 +100,10 @@ function Placeitem(props) {
             <Button inverse onClick={openMapHandler}>
               VIEW ON MAP
             </Button>
-            <Button to={`/places/${props.id}`}>EDIT</Button>
-            <Button danger onClick={openDelete}>Delete</Button>
+           {(auth.userId ===props.creator) && <Button to={`/places/${props.id}`}>EDIT</Button>}
+           {(auth.userId ===props.creator) && <Button danger onClick={openDelete}>
+              Delete
+            </Button>}
           </div>
         </Card>
       </li>
