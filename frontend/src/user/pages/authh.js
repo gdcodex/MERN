@@ -4,6 +4,7 @@ import ErrorModal from "../../shared/components/UIElements/ErrorModal";
 import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
 import Input from "../../shared/components/formelements/input";
 import Card from "../../shared/components/UIElements/Card";
+import Imageupload from '../../shared/components/formelements/imageupload';
 import { AuthContext } from "../../shared/context/auth-context";
 import { useForm } from "../../shared/hooks/form-hooks";
 import { useHttp } from "../../shared/hooks/http-hook";
@@ -41,6 +42,7 @@ function Auth() {
 
   const onSubmitHandler = (event) => {
     event.preventDefault();
+    console.log(formState.inputs)
 
     if (!isLoggedInMode) {
       sendRequest(
@@ -78,12 +80,13 @@ function Auth() {
         {
           ...formState.inputs,
           name: { value: "", isValid: false },
+          image:{ value:null, isValid: false}
         },
         false
       );
     } else {
       setInputData(
-        { ...formState.inputs, name: undefined },
+        { ...formState.inputs, name: undefined, image:undefined },
         formState.inputs.email.isValid && formState.inputs.password.isValid
       );
     }
@@ -122,6 +125,7 @@ function Auth() {
               isSuccess={isSuccess}
             />
           )}
+          {!isLoggedInMode && <Imageupload id='image' center onInput={inputHandler}/>}
 
           <Input
             id="email"
@@ -144,13 +148,13 @@ function Auth() {
             onInput={inputHandler}
             isSuccess={isSuccess}
           />
-          <Button type="submit" disabled={!formState.isValid}>
+          <Button  type="submit" disabled={!formState.isValid}>
             {isLoggedInMode ? "LOGIN" : "SIGNUP"}
           </Button>
-        </form>
-        <Button inverse onClick={switchMode}>
+        <Button type='button' inverse onClick={switchMode}>
           Go to {isLoggedInMode ? "SIGNUP" : "LOGIN"}
         </Button>
+        </form>
       </Card>
     </>
   );
