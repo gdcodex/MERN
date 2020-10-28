@@ -32,9 +32,15 @@ useEffect(()=>{
     if(reslocal){
         setisLoggedIn(JSON.parse(reslocal));
     }
+    const uid =localStorage.getItem("userId");
+    if(uid){
+        setuserId(JSON.parse(uid));
+    }
+
 },[]);
 useEffect(()=>{
     localStorage.setItem("mysong", JSON.stringify(isLoggedIn));
+    localStorage.setItem("userId", JSON.stringify(userId));
 });
 
   let routes;
