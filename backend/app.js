@@ -1,4 +1,5 @@
 const express = require("express");
+const fs = require('fs');
 const mongoose = require("mongoose");
 const bodyPaser = require("body-parser");
 const httpError = require("./models/errors");
@@ -14,7 +15,7 @@ app.use((req, res, next) => {
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept, Authorization"
   );
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PATCH");
+  res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS, POST, DELETE, PATCH");
   next();
 });
 
@@ -28,6 +29,10 @@ app.use((req, res, next) => {
   throw error;
 });
 app.use((error, req, res, next) => {
+  if(req.file){
+    fs.unlink(req.file.path,(err)=>{console.log(err)})
+  }
+
   if (res.headerSent) {
     return next(error);
   }
