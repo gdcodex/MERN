@@ -9,7 +9,6 @@ import {
 } from "./../../shared/Util/validators";
 import "./placeform.css";
 import { useForm } from "../../shared/hooks/form-hooks";
-import { useHttp } from "../../shared/hooks/http-hook";
 import ErrorModal from "../../shared/components/UIElements/ErrorModal";
 import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
 import Imageupload from "../../shared/components/formelements/imageupload";
@@ -19,15 +18,6 @@ const NewPlace = () => {
   const [isSuccess, setisSuccess] = useState(false);
   const [isError, setisError] = useState(false);
   const [isLoading, setisLoading] = useState(false);
-  // const {
-  //   isLoading,
-  //   isError,
-  //   resetError,
-  //   isSuccess,
-  //   resetSuccess,
-  //   sendRequest,
-  // } = useHttp();
-
   const [formState, inputHandler] = useForm(
     {
       title: {
@@ -52,6 +42,7 @@ const NewPlace = () => {
  
   const onSubmitHandler = async(event) => {
     event.preventDefault();
+    setisLoading(true);
      var formdata = new FormData();
       formdata.append("title", formState.inputs.title.value);
       formdata.append("description", formState.inputs.description.value);

@@ -1,3 +1,4 @@
+const fs = require('fs');
 const httpError = require("../models/errors");
 const mongoose = require("mongoose");
 const { validationResult } = require("express-validator");
@@ -145,6 +146,8 @@ const deletePlace = async (req, res, next) => {
   }
   if (!place) return next(new httpError("The place doesn't exist", 404));
 
+  const placePath = place.image
+
   try {
     const sess = await mongoose.startSession();
     sess.startTransaction();
@@ -156,6 +159,7 @@ const deletePlace = async (req, res, next) => {
     console.log(error);
     return next(new httpError("couldn't delete the place", 500));
   }
+  fs.unlink(placePath,(err)=>{console.log(err)})
 
   res.status(200).json({ message: "the place has been deleted" });
 };
