@@ -72,7 +72,7 @@ const createPlace = async (req, res, next) => {
     description,
     location: coordinates,
     address,
-    image: "https://news.bitcoin.com/wp-content/uploads/2019/03/apocalypse.png",
+    image: req.file.path,
     creator,
   });
   //check if user exists

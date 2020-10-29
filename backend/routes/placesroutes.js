@@ -1,5 +1,6 @@
 const express = require("express");
 const { check } = require("express-validator");
+const fileUpload = require("../middleware/fileUpload");
 
 const {
   getPlaceById,
@@ -22,7 +23,7 @@ router.patch(
 ); //to right
 router.delete("/:pid", deletePlace);
 router.post(
-  "/", 
+  "/", fileUpload.single('image'),
   [
     check("title").notEmpty(),
     check("description").isLength({ min: 5 }),
