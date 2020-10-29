@@ -40,27 +40,31 @@ function Auth() {
     false
   );
 
-  const onSubmitHandler = async (event) => {
+  const onSubmitHandler = (event) => {
     event.preventDefault();
 
     if (!isLoggedInMode) {
-      try {
-        const formData = new FormData();
-        formData.append("email", formState.inputs.email.value);
-        formData.append("name", formState.inputs.name.value);
-        formData.append("password", formState.inputs.password.value);
-        formData.append("image", formState.inputs.image.value);
-        await sendRequest(
-          "http://localhost:5000/api/users/signup",
-          "POST",
-          formData
-        );
-      } catch (err) {}
+      
+      var formdata = new FormData();
+      formdata.append("name", formState.inputs.name.value);
+      formdata.append("email", formState.inputs.email.value);
+      formdata.append("password", formState.inputs.password.value);
+      formdata.append("image", formState.inputs.image.value);
+
+      var requestOptions = {
+        method: "POST",
+        body: formdata,
+        redirect: "follow",
+      };
+
+      fetch("http://localhost:5000/api/users/signup", requestOptions)
+        .then((response) => response.text())
+        .then((result) => console.log(result))
+        .catch((error) => console.log("error", error));
     } else {
       sendRequest(
         "http://localhost:5000/api/users/login",
         "POST",
-
         { "Content-Type": "application/json" },
         JSON.stringify({
           email: formState.inputs.email.value,

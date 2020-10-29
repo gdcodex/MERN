@@ -18,6 +18,8 @@ const getUsers = async (req,res,next)=>{
 
 const signUp = async (req,res,next)=>{
     const errors = validationResult(req)
+    console.log(req.body)
+    console.log(errors)
     if(!errors.isEmpty()){
         return next(new httpError("Enter the fields correctly",422))
     }

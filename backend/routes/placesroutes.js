@@ -22,7 +22,7 @@ router.patch(
 ); //to right
 router.delete("/:pid", deletePlace);
 router.post(
-  "/",
+  "/", 
   [
     check("title").notEmpty(),
     check("description").isLength({ min: 5 }),
