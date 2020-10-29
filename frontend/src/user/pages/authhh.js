@@ -4,6 +4,7 @@ import ErrorModal from "../../shared/components/UIElements/ErrorModal";
 import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
 import Input from "../../shared/components/formelements/input";
 import Card from "../../shared/components/UIElements/Card";
+import Imageupload from "../../shared/components/formelements/imageupload";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useForm } from "../../shared/hooks/form-hooks";
 import { useHttp } from "../../shared/hooks/http-hook";
@@ -39,52 +40,65 @@ function Auth() {
     false
   );
 
-  const onSubmitHandler = (event) => {
+  const onSubmitHandler = async (event) => {
     event.preventDefault();
 
     if (!isLoggedInMode) {
+      try {
+        const formData = new FormData();
+        formData.append("email", formState.inputs.email.value);
+        formData.append("name", formState.inputs.name.value);
+        formData.append("password", formState.inputs.password.value);
+        formData.append("image", formState.inputs.image.value);
+        await sendRequest(
+          "http://localhost:5000/api/users/signup",
+          "POST",
+          formData
+        );
+      } catch (err) {}
+    } else {
       sendRequest(
-        "http://localhost:5000/api/users/signup",
+        "http://localhost:5000/api/users/login",
         "POST",
-        {
-          "Content-Type": "application/json",
-        },
+
+        { "Content-Type": "application/json" },
         JSON.stringify({
-          name: formState.inputs.name.value,
           email: formState.inputs.email.value,
           password: formState.inputs.password.value,
         })
-      );
-    } else {
-     
-        sendRequest(
-           "http://localhost:5000/api/users/login",
-           "POST",
-   
-           { "Content-Type": "application/json" },
-           JSON.stringify({
-             email: formState.inputs.email.value,
-             password: formState.inputs.password.value,
-           })
-         ).then(data=>{auth.login(data.user.id); console.log('then')}).catch(err=>console.log(auth.userId))
-      }
-    
-    
+      )
+        .then((data) => {
+          auth.login(data.user.id);
+          console.log("then");
+        })
+        .catch((err) => console.log(auth.userId));
+    }
   };
 
   const switchMode = () => {
-    if (isLoggedInMode) {
+    if (!isLoggedInMode) {
       setInputData(
         {
           ...formState.inputs,
-          name: { value: "", isValid: false },
+          name: undefined,
+          image: undefined,
         },
-        false
+        formState.inputs.email.isValid && formState.inputs.password.isValid
       );
     } else {
       setInputData(
-        { ...formState.inputs, name: undefined },
-        formState.inputs.email.isValid && formState.inputs.password.isValid
+        {
+          ...formState.inputs,
+          name: {
+            value: "",
+            isValid: false,
+          },
+          image: {
+            value: null,
+            isValid: false,
+          },
+        },
+        false
       );
     }
     setisLoggedInMode((p) => !p);
@@ -121,6 +135,9 @@ function Auth() {
               onInput={inputHandler}
               isSuccess={isSuccess}
             />
+          )}
+          {!isLoggedInMode && (
+            <Imageupload center id="image" onInput={inputHandler} />
           )}
 
           <Input

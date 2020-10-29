@@ -8,7 +8,7 @@ const router = express.Router();
 //routes
 router.get("/", U.getUsers);
 router.post(
-  "/signup",
+  "/signup", fileUpload.single('image'),
   [
     check("name").notEmpty(),
     check("email").normalizeEmail().isEmail(),

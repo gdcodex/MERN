@@ -41,6 +41,7 @@ const signUp = async (req,res,next)=>{
         email,
         password,
         image:"https://hips.hearstapps.com/digitalspyuk.cdnds.net/18/44/1540890998-twd-905-jld-0621-05297-rt.jpg",
+        
         places: []
     })
     try{

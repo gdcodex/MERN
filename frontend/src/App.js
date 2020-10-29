@@ -10,7 +10,7 @@ import Newplace from "./places/pages/newplace";
 import Userplaces from "./places/pages/userplaces";
 import Mainnavigation from "./shared/components/Navigation/mainnavigation";
 import Updateplace from "./places/pages/updateplace";
-import Auth from "./user/pages/authh";
+import Auth from "./user/pages/authhh";
 import { AuthContext } from "./shared/context/auth-context";
 
 function App() {

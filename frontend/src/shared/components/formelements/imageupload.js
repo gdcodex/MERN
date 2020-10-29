@@ -6,7 +6,7 @@ import './imageupload.css';
 function Imageupload(props) {
     const [file, setfile] = useState();
     const [previewUrl, setpreviewUrl] = useState();
-    const [isValid, setisValid] = useState(false);
+    const [isValid, setisValid] = useState(true);
     const inputRef = useRef()
 
     useEffect(()=>{
