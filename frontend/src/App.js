@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
   Switch,
@@ -17,66 +17,58 @@ function App() {
   const [isLoggedIn, setisLoggedIn] = useState(false);
   const [userId, setuserId] = useState(null);
 
-  const login =useCallback((uid)=>{
-    setisLoggedIn(true)
-    setuserId(uid)
-  },[])
+  const login = useCallback((uid) => {
+    setisLoggedIn(true);
+    setuserId(uid);
+  }, []);
 
-  const logout =useCallback(()=>{
-    setisLoggedIn(false)
-    setuserId(null)
-  },[])
-//so that login state is not lost on refresh
-useEffect(()=>{
-    const reslocal =localStorage.getItem("mysong");
-    if(reslocal){
-        setisLoggedIn(JSON.parse(reslocal));
+  const logout = useCallback(() => {
+    setisLoggedIn(false);
+    setuserId(null);
+  }, []);
+  //so that login state is not lost on refresh
+  useEffect(() => {
+    const reslocal = localStorage.getItem("mysong");
+    if (reslocal) {
+      setisLoggedIn(JSON.parse(reslocal));
     }
-    const uid =localStorage.getItem("userId");
-    if(uid){
-        setuserId(JSON.parse(uid));
+    const uid = localStorage.getItem("userId");
+    if (uid) {
+      setuserId(JSON.parse(uid));
     }
-
-},[]);
-useEffect(()=>{
+  }, []);
+  useEffect(() => {
     localStorage.setItem("mysong", JSON.stringify(isLoggedIn));
     localStorage.setItem("userId", JSON.stringify(userId));
-});
+  });
 
   let routes;
-  if(isLoggedIn){
-     routes=(
+  if (isLoggedIn) {
+    routes = (
       <Switch>
-          <Route path="/" exact component={Users} />
-          <Route path="/:userId/places" exact component={Userplaces} />
-          <Route path="/places/new" exact component={Newplace} />
-            <Route path="/places/:placeId" exact component={Updateplace} />
-            <Redirect to="/"  />
+        <Route path="/" exact component={Users} />
+        <Route path="/:userId/places" exact component={Userplaces} />
+        <Route path="/places/new" exact component={Newplace} />
+        <Route path="/places/:placeId" exact component={Updateplace} />
+        <Redirect to="/" />
       </Switch>
-    )
-  }
-  else{
-    routes=(
+    );
+  } else {
+    routes = (
       <Switch>
         <Route path="/" exact component={Users} />
         <Route path="/:userId/places" component={Userplaces} />
         <Route path="/auth" exact component={Auth} />
         <Redirect to="/auth" />
       </Switch>
-    )
+    );
   }
 
   return (
-    <AuthContext.Provider value={{isLoggedIn,login,logout,userId}}>
+    <AuthContext.Provider value={{ isLoggedIn, login, logout, userId }}>
       <Router>
         <Mainnavigation />
-        <main>
-        
-          
-          {routes}
-          
-       
-        </main>
+        <main>{routes}</main>
       </Router>
     </AuthContext.Provider>
   );

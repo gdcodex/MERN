@@ -186,10 +186,10 @@ function Auth() {
           <Button type="submit" disabled={!formState.isValid}>
             {isLoggedInMode ? "LOGIN" : "SIGNUP"}
           </Button>
-        </form>
-        <Button inverse onClick={switchMode}>
+        <Button type='button' inverse onClick={switchMode}>
           Go to {isLoggedInMode ? "SIGNUP" : "LOGIN"}
         </Button>
+        </form>
       </Card>
     </>
   );

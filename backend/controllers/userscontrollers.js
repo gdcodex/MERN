@@ -19,7 +19,6 @@ const getUsers = async (req,res,next)=>{
 const signUp = async (req,res,next)=>{
     const errors = validationResult(req)
     console.log(req.body)
-    console.log(errors)
     if(!errors.isEmpty()){
         return next(new httpError("Enter the fields correctly",422))
     }
@@ -42,8 +41,7 @@ const signUp = async (req,res,next)=>{
         name,
         email,
         password,
-        image:"https://hips.hearstapps.com/digitalspyuk.cdnds.net/18/44/1540890998-twd-905-jld-0621-05297-rt.jpg",
-        
+        image:req.file.path,
         places: []
     })
     try{
