@@ -7,7 +7,6 @@ import Card from "../../shared/components/UIElements/Card";
 import Imageupload from "../../shared/components/formelements/imageupload";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useForm } from "../../shared/hooks/form-hooks";
-import { useHttp } from "../../shared/hooks/http-hook";
 import {
   VALIDATOR_EMAIL,
   VALIDATOR_MINLENGTH,

@@ -1,5 +1,6 @@
 const httpError = require("../models/errors");
 const User = require('../models/usersschema')
+const bcrypt = require('bcryptjs');
 const {validationResult} = require('express-validator')
 
 
@@ -36,11 +37,19 @@ const signUp = async (req,res,next)=>{
         return next(new httpError("Email already registered",422))
     }
 
+    let hashPassword;
+    try{
+        hashPassword = await bcrypt.hash(password, 12);
+    }
+    catch(err){
+        return next(new httpError('Something went wrong',500))
+    }
+
    
    const user = new User({
         name,
         email,
-        password,
+        password:hashPassword,
         image:req.file.path,
         places: []
     })
