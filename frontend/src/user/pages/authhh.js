@@ -16,16 +16,10 @@ import {
 
 function Auth() {
   const auth = useContext(AuthContext);
+  const [isSuccess, setisSuccess] = useState(false);
+  const [isError, setisError] = useState(false);
+  const [isLoading, setisLoading] = useState(false);
   const [isLoggedInMode, setisLoggedInMode] = useState(true);
-  const {
-    isLoading,
-    isError,
-    resetError,
-    isSuccess,
-    resetSuccess,
-    sendRequest,
-  } = useHttp();
-
   const [formState, inputHandler, setInputData] = useForm(
     {
       email: {
@@ -40,11 +34,10 @@ function Auth() {
     false
   );
 
-  const onSubmitHandler = (event) => {
+  const onSubmitHandler = async (event) => {
     event.preventDefault();
 
     if (!isLoggedInMode) {
-      
       var formdata = new FormData();
       formdata.append("name", formState.inputs.name.value);
       formdata.append("email", formState.inputs.email.value);
@@ -56,26 +49,47 @@ function Auth() {
         body: formdata,
         redirect: "follow",
       };
-
-      fetch("http://localhost:5000/api/users/signup", requestOptions)
-        .then((response) => response.text())
-        .then((result) => console.log(result))
-        .catch((error) => console.log("error", error));
+      try {
+        const response = await fetch(
+          "http://localhost:5000/api/users/signup",
+          requestOptions
+        );
+        const responseData = await response.json();
+        if (!response.ok) {
+          throw new Error(responseData.message);
+        }
+        console.log(responseData);
+        setisLoading(false);
+        setisSuccess(true);
+      } catch (err) {
+        console.log(err.message);
+        setisLoading(false);
+        setisError(err.message);
+      }
     } else {
-      sendRequest(
-        "http://localhost:5000/api/users/login",
-        "POST",
-        { "Content-Type": "application/json" },
-        JSON.stringify({
-          email: formState.inputs.email.value,
-          password: formState.inputs.password.value,
-        })
-      )
-        .then((data) => {
-          auth.login(data.user.id);
-          console.log("then");
-        })
-        .catch((err) => console.log(auth.userId));
+      try {
+        const response = await fetch("http://localhost:5000/api/users/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: formState.inputs.email.value,
+            password: formState.inputs.password.value,
+          }),
+        });
+        const responseData = await response.json();
+        if (!response.ok) {
+          throw new Error(responseData.message);
+        }
+        auth.login(responseData.user.id);
+        console.log(responseData);
+        setisLoading(false);
+      } catch (err) {
+        console.log(err.message);
+        setisLoading(false);
+        setisError(err.message);
+      }
     }
   };
 
@@ -114,14 +128,18 @@ function Auth() {
         <ErrorModal
           error={isError}
           header="An Error Occurred"
-          onClear={resetError}
+          onClear={() => {
+            setisError(false);
+          }}
         />
       )}
       {isSuccess && (
         <ErrorModal
           error="User Succesfully Created"
           header="Congrtulations !!"
-          onClear={resetSuccess}
+          onClear={() => {
+            setisSuccess(false);
+          }}
         />
       )}
       <Card className="place-form">
