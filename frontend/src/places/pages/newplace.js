@@ -52,6 +52,7 @@ const NewPlace = () => {
 
       var requestOptions = {
         method: "POST",
+        headers:{Authorization: 'Bearer ' + UID.token},
         body: formdata,
         redirect: "follow",
       };
@@ -72,7 +73,7 @@ const NewPlace = () => {
         setisLoading(false);
         setisError(err.message);
       }
-    console.log(formState);
+   
   };
 
   return (

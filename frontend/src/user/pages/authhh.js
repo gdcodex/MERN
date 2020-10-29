@@ -81,7 +81,7 @@ function Auth() {
         if (!response.ok) {
           throw new Error(responseData.message);
         }
-        auth.login(responseData.userId);
+        auth.login(responseData.userId, responseData.token);
         console.log(responseData);
         setisLoading(false);
       } catch (err) {

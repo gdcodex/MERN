@@ -14,23 +14,23 @@ import Auth from "./user/pages/authhh";
 import { AuthContext } from "./shared/context/auth-context";
 
 function App() {
-  const [isLoggedIn, setisLoggedIn] = useState(false);
+  const [token, settoken] = useState(null);
   const [userId, setuserId] = useState(null);
 
-  const login = useCallback((uid) => {
-    setisLoggedIn(true);
+  const login = useCallback((uid, token) => {
+    settoken(token);
     setuserId(uid);
   }, []);
 
   const logout = useCallback(() => {
-    setisLoggedIn(false);
+    settoken(token);
     setuserId(null);
-  }, []);
+  }, [token]);
   //so that login state is not lost on refresh
   useEffect(() => {
     const reslocal = localStorage.getItem("mysong");
     if (reslocal) {
-      setisLoggedIn(JSON.parse(reslocal));
+      settoken(JSON.parse(reslocal));
     }
     const uid = localStorage.getItem("userId");
     if (uid) {
@@ -38,12 +38,12 @@ function App() {
     }
   }, []);
   useEffect(() => {
-    localStorage.setItem("mysong", JSON.stringify(isLoggedIn));
+    localStorage.setItem("mysong", JSON.stringify(token));
     localStorage.setItem("userId", JSON.stringify(userId));
   });
 
   let routes;
-  if (isLoggedIn) {
+  if (token) {
     routes = (
       <Switch>
         <Route path="/" exact component={Users} />
@@ -65,7 +65,7 @@ function App() {
   }
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, login, logout, userId }}>
+    <AuthContext.Provider value={{ isLoggedIn: !!token,token, login, logout, userId }}>
       <Router>
         <Mainnavigation />
         <main>{routes}</main>
