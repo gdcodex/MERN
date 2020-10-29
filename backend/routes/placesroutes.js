@@ -1,6 +1,7 @@
 const express = require("express");
 const { check } = require("express-validator");
 const fileUpload = require("../middleware/fileUpload");
+const auth = require('../middleware/auth');
 
 const {
   getPlaceById,
@@ -16,6 +17,12 @@ const router = express.Router();
 //routes
 router.get("/:pid", getPlaceById);
 router.get("/users/:uid", getPlacesByUserId); //multiple middlewares can be added which will be executed from left
+
+
+router.use(auth);
+
+
+
 router.patch(
   "/:pid",
   [check("title").notEmpty(), check("description").isLength({ min: 5 })],
