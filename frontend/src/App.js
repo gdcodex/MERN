@@ -21,7 +21,7 @@ function App() {
   const login = useCallback((uid, token) => {
     settoken(token);
     setuserId(uid);
-    let tokenExpirationDate = new Date(new Date().getTime() + 1000 * 60);
+    let tokenExpirationDate = new Date(new Date().getTime() + 1000 * 60*60);
     localStorage.setItem('data',JSON.stringify({token,uid,tokenExpiration:tokenExpirationDate}))
     settokenExpiration(tokenExpirationDate);
   }, []);

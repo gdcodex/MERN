@@ -60,7 +60,7 @@ const createPlace = async (req, res, next) => {
     return next(new httpError("Please fill all the fields properly", 422));
   }
 
-  const { title, description, address, creator } = req.body;
+  const { title, description, address } = req.body;
 
   let coordinates;
   try {
@@ -74,16 +74,16 @@ const createPlace = async (req, res, next) => {
     location: coordinates,
     address,
     image: req.file.path,
-    creator,
+    creator:req.userData.userId
   });
   //check if user exists
   let user;
   try {
-    user = await User.findById(creator);
+    user = await User.findById(req.userData.userId);
   } catch (error) {
     return next(new httpError("Something went wrong", 500));
   }
-  if (!user) return next(new httpError("Sorry you are not logged in", 404));
+  if (!user) return next(new httpError("Sorry you don't have an account, please create one !", 404));
 
   try {
     const sess = await mongoose.startSession();

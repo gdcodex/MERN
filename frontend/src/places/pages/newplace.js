@@ -48,7 +48,6 @@ const NewPlace = () => {
       formdata.append("description", formState.inputs.description.value);
       formdata.append("address", formState.inputs.address.value);
       formdata.append("image", formState.inputs.image.value);
-      formdata.append("creator", UID.userId );
 
       var requestOptions = {
         method: "POST",
