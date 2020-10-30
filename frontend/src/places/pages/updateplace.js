@@ -55,8 +55,7 @@ function Updateplace() {
         );
       })
       .catch((err) => console.log(err));
-  },[placeId,sendRequest,setInputData]);
-
+  }, [placeId, sendRequest, setInputData]);
 
   if (isLoading) {
     return (
@@ -75,18 +74,27 @@ function Updateplace() {
       </div>
     );
   }
-  const onSubmitHandler = (event) => {
+  const onSubmitHandler = async (event) => {
     event.preventDefault();
-    sendRequest(`http://localhost:5000/api/places/${placeId}`,
-    "PATCH", {Authorization:'Bearer ' + userId.token
-    ,'Content-Type':'application/json'},
-    JSON.stringify({
-      title:formState.inputs.title.value,
-      description: formState.inputs.description.value
-    })
-    ).then(data=>history.push('/' + userId.userId + '/places')
-    ).catch(err=>console.log(err))
-    
+    try {
+     const response = await sendRequest(
+        `http://localhost:5000/api/places/${placeId}`,
+        "PATCH",
+        {
+          Authorization: "Bearer " + userId.token,
+          "Content-Type": "application/json",
+        },
+        JSON.stringify({
+          title: formState.inputs.title.value,
+          description: formState.inputs.description.value,
+        })
+      );
+      if(!response){
+        throw new Error('Failed');
+      }
+      
+      history.push("/" + userId.userId + "/places");
+    } catch (err) {}
   };
 
   return (

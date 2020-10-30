@@ -1,4 +1,4 @@
-const fs = require('fs');
+const fs = require("fs");
 const httpError = require("../models/errors");
 const mongoose = require("mongoose");
 const { validationResult } = require("express-validator");
@@ -36,13 +36,11 @@ const getPlacesByUserId = async (req, res, next) => {
   let userWithPlaces;
   try {
     // places = await Place.find({ creator: userId });
-    userWithPlaces = await User.findById(userId).populate('places') 
+    userWithPlaces = await User.findById(userId).populate("places");
     // places-->userWithPlaces.places
   } catch (error) {
     console.log(error);
-    return next(
-      new httpError("Server error", 500)
-    );
+    return next(new httpError("Server error", 500));
   }
 
   if (!userWithPlaces) {
@@ -50,7 +48,9 @@ const getPlacesByUserId = async (req, res, next) => {
       new httpError("Couldn't find place for the provided user id", 404)
     );
   }
-  res.json({ places: userWithPlaces.places.map((p) => p.toObject({ getters: true })) });
+  res.json({
+    places: userWithPlaces.places.map((p) => p.toObject({ getters: true })),
+  });
 };
 
 //createPlace
@@ -118,7 +118,14 @@ const updatePlace = async (req, res, next) => {
       new httpError("Something went wrong,could not find any such place", 500)
     );
   }
-
+  if (req.userData.userId !== place.creator.toString()) {
+    return next(
+      new httpError(
+        "You are blocked from making any changes since this place does not belong to you",
+        401
+      )
+    );
+  }
   place.title = title;
   place.description = description;
   try {
@@ -146,7 +153,7 @@ const deletePlace = async (req, res, next) => {
   }
   if (!place) return next(new httpError("The place doesn't exist", 404));
 
-  const placePath = place.image
+  const placePath = place.image;
 
   try {
     const sess = await mongoose.startSession();
@@ -159,7 +166,9 @@ const deletePlace = async (req, res, next) => {
     console.log(error);
     return next(new httpError("couldn't delete the place", 500));
   }
-  fs.unlink(placePath,(err)=>{console.log(err)})
+  fs.unlink(placePath, (err) => {
+    console.log(err);
+  });
 
   res.status(200).json({ message: "the place has been deleted" });
 };
