@@ -23,10 +23,10 @@ function App() {
   }, []);
 
   const logout = useCallback(() => {
-    settoken(token);
+    settoken(null);
     setuserId(null);
-  }, [token]);
-  //so that login state is not lost on refresh
+  }, []);
+  // so that login state is not lost on refresh
   useEffect(() => {
     const reslocal = localStorage.getItem("mysong");
     if (reslocal) {

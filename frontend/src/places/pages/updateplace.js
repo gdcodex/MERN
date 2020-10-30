@@ -78,8 +78,8 @@ function Updateplace() {
   const onSubmitHandler = (event) => {
     event.preventDefault();
     sendRequest(`http://localhost:5000/api/places/${placeId}`,
-    "PATCH",
-    {'Content-Type':'application/json'},
+    "PATCH", {Authorization:'Bearer ' + userId.token
+    ,'Content-Type':'application/json'},
     JSON.stringify({
       title:formState.inputs.title.value,
       description: formState.inputs.description.value
