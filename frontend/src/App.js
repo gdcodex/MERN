@@ -16,32 +16,43 @@ import { AuthContext } from "./shared/context/auth-context";
 function App() {
   const [token, settoken] = useState(null);
   const [userId, setuserId] = useState(null);
+  const [tokenExpiration, settokenExpiration] = useState(null);
 
   const login = useCallback((uid, token) => {
     settoken(token);
     setuserId(uid);
+    let tokenExpirationDate = new Date(new Date().getTime() + 1000 * 60);
+    localStorage.setItem('data',JSON.stringify({token,uid,tokenExpiration:tokenExpirationDate}))
+    settokenExpiration(tokenExpirationDate);
   }, []);
 
   const logout = useCallback(() => {
     settoken(null);
     setuserId(null);
+    settokenExpiration(null);
+    localStorage.removeItem('data')
   }, []);
   // so that login state is not lost on refresh
   useEffect(() => {
-    const reslocal = localStorage.getItem("mysong");
-    if (reslocal) {
-      settoken(JSON.parse(reslocal));
+    const reslocal =JSON.parse( localStorage.getItem("data"));
+    if (reslocal && reslocal.token) {
+      settoken((reslocal.token));
+      setuserId(reslocal.uid);
+      settokenExpiration(new Date(reslocal.tokenExpiration))
+
     }
-    const uid = localStorage.getItem("userId");
-    if (uid) {
-      setuserId(JSON.parse(uid));
-    }
+   
   }, []);
   useEffect(() => {
-    localStorage.setItem("mysong", JSON.stringify(token));
-    localStorage.setItem("userId", JSON.stringify(userId));
-  });
+    if (token && tokenExpiration) {
+      setTimeout(logout, tokenExpiration.getTime() - new Date().getTime());
+    } else {
+      clearTimeout();
+    }
+  }, [token, logout, tokenExpiration]);
+ 
 
+  console.log("ss");
   let routes;
   if (token) {
     routes = (
@@ -65,7 +76,9 @@ function App() {
   }
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn: !!token,token, login, logout, userId }}>
+    <AuthContext.Provider
+      value={{ isLoggedIn: !!token, token, login, logout, userId }}
+    >
       <Router>
         <Mainnavigation />
         <main>{routes}</main>

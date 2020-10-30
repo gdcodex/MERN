@@ -81,9 +81,9 @@ function Auth() {
         if (!response.ok) {
           throw new Error(responseData.message);
         }
-        auth.login(responseData.userId, responseData.token);
-        console.log(responseData);
         setisLoading(false);
+        auth.login(responseData.userId, responseData.token);
+        
       } catch (err) {
         console.log(err.message);
         setisLoading(false);
