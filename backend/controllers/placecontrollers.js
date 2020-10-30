@@ -121,7 +121,7 @@ const updatePlace = async (req, res, next) => {
   if (req.userData.userId !== place.creator.toString()) {
     return next(
       new httpError(
-        "You are blocked from making any changes since this place does not belong to you",
+        "You are blocked from making any changes !",
         401
       )
     );
@@ -152,6 +152,11 @@ const deletePlace = async (req, res, next) => {
     return next(new httpError("Something gone wrong", 500));
   }
   if (!place) return next(new httpError("The place doesn't exist", 404));
+
+  console.log(place.creator.id);
+  if(req.userData.userId !== place.creator.id){
+    return next(new httpError('Your are not authorized to delete this place',401));
+  }
 
   const placePath = place.image;
 

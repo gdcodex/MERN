@@ -13,6 +13,6 @@ module.exports = (req, res, next) => {
     req.userData = { userId: decodedToken.userId}  //attaching data
     next()
   } catch (err) {
-    return next(new httpError("Authentication failed", 401));
+    return next(new httpError("Authentication failed", 403));
   }
 };

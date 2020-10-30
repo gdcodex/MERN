@@ -79,7 +79,7 @@ const logIn = async (req, res, next) => {
   }
   if (!existingUser) {
     return next(
-      new httpError("Email id not registered, please Sing Up first !", 401)
+      new httpError("Email id not registered, please Sing Up first !", 403)
     );
   }
 
@@ -95,7 +95,7 @@ const logIn = async (req, res, next) => {
     return next(
       new httpError(
         "Your email and password didn't match. Please try again !",
-        401
+        403
       )
     );
   }
