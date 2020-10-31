@@ -5,6 +5,7 @@ import {
   Route,
   Redirect,
 } from "react-router-dom";
+import LandingPage from "./landing/landing";
 import Users from "./user/pages/userss";
 import Newplace from "./places/pages/newplace";
 import Userplaces from "./places/pages/userplaces";
@@ -21,8 +22,11 @@ function App() {
   const login = useCallback((uid, token) => {
     settoken(token);
     setuserId(uid);
-    let tokenExpirationDate = new Date(new Date().getTime() + 1000 * 60*60);
-    localStorage.setItem('data',JSON.stringify({token,uid,tokenExpiration:tokenExpirationDate}))
+    let tokenExpirationDate = new Date(new Date().getTime() + 1000 * 60 * 60);
+    localStorage.setItem(
+      "data",
+      JSON.stringify({ token, uid, tokenExpiration: tokenExpirationDate })
+    );
     settokenExpiration(tokenExpirationDate);
   }, []);
 
@@ -30,18 +34,16 @@ function App() {
     settoken(null);
     setuserId(null);
     settokenExpiration(null);
-    localStorage.removeItem('data')
+    localStorage.removeItem("data");
   }, []);
   // so that login state is not lost on refresh
   useEffect(() => {
-    const reslocal =JSON.parse( localStorage.getItem("data"));
+    const reslocal = JSON.parse(localStorage.getItem("data"));
     if (reslocal && reslocal.token) {
-      settoken((reslocal.token));
+      settoken(reslocal.token);
       setuserId(reslocal.uid);
-      settokenExpiration(new Date(reslocal.tokenExpiration))
-
+      settokenExpiration(new Date(reslocal.tokenExpiration));
     }
-   
   }, []);
   useEffect(() => {
     if (token && tokenExpiration) {
@@ -50,7 +52,6 @@ function App() {
       clearTimeout();
     }
   }, [token, logout, tokenExpiration]);
- 
 
   console.log("ss");
   let routes;
@@ -66,12 +67,14 @@ function App() {
     );
   } else {
     routes = (
-      <Switch>
-        <Route path="/" exact component={Users} />
-        <Route path="/:userId/places" component={Userplaces} />
-        <Route path="/auth" exact component={Auth} />
-        <Redirect to="/auth" />
-      </Switch>
+      <>
+        <Switch>
+          <Route path="/" exact component={Users} />
+          <Route path="/:userId/places" component={Userplaces} />
+          <Route path="/auth" exact component={Auth} />
+          <Redirect to="/auth" />
+        </Switch>
+      </>
     );
   }
 
@@ -80,6 +83,7 @@ function App() {
       value={{ isLoggedIn: !!token, token, login, logout, userId }}
     >
       <Router>
+        <LandingPage />
         <Mainnavigation />
         <main>{routes}</main>
       </Router>

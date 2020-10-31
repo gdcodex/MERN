@@ -1,21 +1,18 @@
-import React from 'react'
-import './landing.css';
+import React from "react";
+import "./landing.css";
 function LandingPage() {
-    return (
-        <>
-        <h1 className="landing-title">
-
-        </h1>
-       <div className="main-landing">
-           <div className="first-landing">
-
-           </div>
-           <div className="second-landing">
-
-           </div>
-       </div>
-       </>
-    )
+  return (
+    <>
+      <div className="main-landing">
+        <div className="first-landing">
+          <img src="/camp.png" alt="camp" />
+        </div>
+        <div className="second-landing">
+          <h1 className="landing-title">TOUR 🌴</h1>
+        </div>
+      </div>
+    </>
+  );
 }
 
-export default LandingPage
+export default LandingPage;
