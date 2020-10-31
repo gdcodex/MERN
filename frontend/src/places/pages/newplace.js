@@ -73,7 +73,13 @@ const NewPlace = () => {
       }
    
   };
-
+  if (isLoading) {
+    return (
+      <div className="center">
+        <LoadingSpinner asOverlay />
+      </div>
+    );
+  }
   return (
     <>
       {isError && (
@@ -88,8 +94,8 @@ const NewPlace = () => {
           onClear={()=>{setisSuccess(false)}}
         />
       )}
+     
       <form onSubmit={onSubmitHandler} className="place-form">
-      {isLoading && <LoadingSpinner asOverlay />}
         <Input
           id="title"
           element="input"

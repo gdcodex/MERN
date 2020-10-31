@@ -14,10 +14,27 @@ import Updateplace from "./places/pages/updateplace";
 import Auth from "./user/pages/authhh";
 import { AuthContext } from "./shared/context/auth-context";
 
+import ErrorModal from "./shared/components/UIElements/ErrorModal";
+import LoadingSpinner from "./shared/components/UIElements/LoadingSpinner";
+import { useHttp } from "./shared/hooks/http-hook";
+
 function App() {
   const [token, settoken] = useState(null);
   const [userId, setuserId] = useState(null);
   const [tokenExpiration, settokenExpiration] = useState(null);
+  const [loadedUsers, setloadedUsers] = useState(false);
+  const { isLoading, isError, resetError, sendRequest } = useHttp();
+
+  useEffect(() => {
+    sendRequest("http://localhost:5000/api/users")
+      .then((data) => {
+        setloadedUsers(data.users);
+        console.log(data.users);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [sendRequest]);
 
   const login = useCallback((uid, token) => {
     settoken(token);
@@ -69,7 +86,11 @@ function App() {
     routes = (
       <>
         <Switch>
-          <Route path="/" exact component={Users} />
+          <Route
+            path="/"
+            exact
+            component={Users}
+          />
           <Route path="/:userId/places" component={Userplaces} />
           <Route path="/auth" exact component={Auth} />
           <Redirect to="/auth" />
@@ -79,15 +100,39 @@ function App() {
   }
 
   return (
-    <AuthContext.Provider
-      value={{ isLoggedIn: !!token, token, login, logout, userId }}
-    >
-      <Router>
-        <LandingPage />
-        <Mainnavigation />
-        <main>{routes}</main>
-      </Router>
-    </AuthContext.Provider>
+    <>
+      {isLoading && (
+        <div className="center">
+          <LoadingSpinner asOverlay />
+        </div>
+      )}
+      {isError && (
+        <ErrorModal
+          error={isError}
+          header="An Error Occurred"
+          onClear={resetError}
+        />
+      )}
+
+      {loadedUsers && (
+        <AuthContext.Provider
+          value={{
+            isLoggedIn: !!token,
+            token,
+            login,
+            logout,
+            userId,
+            loadedUsers,
+          }}
+        >
+          <Router>
+            <LandingPage />
+            <Mainnavigation />
+            <main>{routes}</main>
+          </Router>
+        </AuthContext.Provider>
+      )}
+    </>
   );
 }
 
