@@ -8,7 +8,7 @@ module.exports = (req, res, next) => {
     if (!token) {
       throw new Error("Authentication failed");
     }
-    const decodedToken= jwt.verify(token,"secret_token_gdai_nottobeshared")
+    const decodedToken= jwt.verify(token,process.env.JWT_Key)
     req.userData = { userId: decodedToken.userId}  //attaching data
     next()
   } catch (err) {

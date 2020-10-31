@@ -48,7 +48,7 @@ app.use((error, req, res, next) => {
 });
 
 const url =
-  "mongodb+srv://gdai:RGt4GDz2mcR4xs9F@cluster0.dxgwg.mongodb.net/mern?retryWrites=true&w=majority";
+  `mongodb+srv://${process.env.Database_User}:${process.env.Database_Password}@cluster0.dxgwg.mongodb.net/${process.env.Database_Name}?retryWrites=true&w=majority`;
 
 mongoose
   .connect(url, { useNewUrlParser: true, useUnifiedTopology: true })

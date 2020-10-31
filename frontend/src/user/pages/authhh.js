@@ -50,7 +50,7 @@ function Auth() {
       };
       try {
         const response = await fetch(
-          "http://localhost:5000/api/users/signup",
+          process.env.REACT_APP_BACKEND_URL  + "/users/signup",
           requestOptions
         );
         const responseData = await response.json();
@@ -67,7 +67,7 @@ function Auth() {
       }
     } else {
       try {
-        const response = await fetch("http://localhost:5000/api/users/login", {
+        const response = await fetch(process.env.REACT_APP_BACKEND_URL + "/users/login", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -138,6 +138,7 @@ function Auth() {
           header="Congrtulations !!"
           onClear={() => {
             setisSuccess(false);
+            window.location.reload();
           }}
         />
       )}

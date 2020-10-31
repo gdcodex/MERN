@@ -32,7 +32,7 @@ function Navlinks(props) {
           <Link to={`/${authC.userId}/places`} onClick={props.onClick}>
             <img
               id="user-image-account"
-              src={`http://localhost:5000/${user[0].image}`}
+              src={process.env.REACT_APP_ASSETS_URL +`/${user[0].image}`}
               alt="My places"
             />
           </Link>

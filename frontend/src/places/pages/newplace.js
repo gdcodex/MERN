@@ -57,7 +57,7 @@ const NewPlace = () => {
       };
       try {
         const response = await fetch(
-          "http://localhost:5000/api/places",
+          process.env.REACT_APP_BACKEND_URL + "/places",
           requestOptions
         );
         const responseData = await response.json();

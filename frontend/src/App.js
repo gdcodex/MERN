@@ -29,7 +29,6 @@ function App() {
     sendRequest("http://localhost:5000/api/users")
       .then((data) => {
         setloadedUsers(data.users);
-        console.log(data.users);
       })
       .catch((err) => {
         console.log(err);

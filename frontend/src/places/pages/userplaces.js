@@ -8,10 +8,9 @@ import Placelist from "../components/placelist";
 function Userplaces() {
   const [loadedPlaces, setloadedPlaces] = useState(null);
   const { isLoading,sendRequest } = useHttp();
-
   const userId = useParams().userId;
   useEffect(() => {
-    sendRequest(`http://localhost:5000/api/places/users/${userId}`)
+    sendRequest( `${process.env.REACT_APP_BACKEND_URL}/places/users/${userId}`)
       .then((data) => {setloadedPlaces(data.places)})
       .catch((err) => console.log(err,'sss'));
   }, [sendRequest,userId]);

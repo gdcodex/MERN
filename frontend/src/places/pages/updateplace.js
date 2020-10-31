@@ -37,7 +37,7 @@ function Updateplace() {
   );
 
   useEffect(() => {
-    sendRequest(`http://localhost:5000/api/places/${placeId}`)
+    sendRequest(process.env.REACT_APP_BACKEND_URL + `/places/${placeId}`)
       .then((data) => {
         setloadedPlace(data.place);
         setInputData(
@@ -78,7 +78,7 @@ function Updateplace() {
     event.preventDefault();
     try {
      const response = await sendRequest(
-        `http://localhost:5000/api/places/${placeId}`,
+      process.env.REACT_APP_BACKEND_URL + `/places/${placeId}`,
         "PATCH",
         {
           Authorization: "Bearer " + userId.token,
