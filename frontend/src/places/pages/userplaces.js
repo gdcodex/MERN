@@ -12,7 +12,7 @@ function Userplaces() {
   const userId = useParams().userId;
   useEffect(() => {
     sendRequest(`http://localhost:5000/api/places/users/${userId}`)
-      .then((data) => {setloadedPlaces(data.places);console.log(data.places)})
+      .then((data) => {setloadedPlaces(data.places)})
       .catch((err) => console.log(err,'sss'));
   }, [sendRequest,userId]);
 

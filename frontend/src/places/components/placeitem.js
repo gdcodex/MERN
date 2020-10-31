@@ -21,16 +21,7 @@ function Placeitem(props) {
   const openDelete = () => setshowDelete(true);
   const closeDelete = () => setshowDelete(false);
   const confirmDelete = async () => {
-    console.log("deleting...");
     setshowDelete(false);
-    // sendRequest(`http://localhost:5000/api/plces/${props.id}`, "DELETE").then(data => {
-    //     console.log('then:',data)
-    //     props.onDelete(props.id);
-    //   }
-    // ).catch(err=>
-    //   console.log('kaise nhi')
-    // )
-
   try{
     await sendRequest(
       `http://localhost:5000/api/places/${props.id}`, "DELETE",{Authorization:'Bearer ' + auth.token }
@@ -41,8 +32,6 @@ function Placeitem(props) {
     console.log('kuch nhi')
   }
 }
-
- 
   if(isError){
     return (
       <>

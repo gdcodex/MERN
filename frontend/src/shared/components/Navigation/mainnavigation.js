@@ -16,7 +16,7 @@ function Mainnavigation() {
 
       <Sidedrawer open={Open} onClick={drawerIsOpen}>
         <nav className="main-navigation__drawer-nav">
-          <Navlinks onClick={() => setdrawerIsOpen(false)}  />
+          <Navlinks onClick={() => setdrawerIsOpen(false)} />
         </nav>
       </Sidedrawer>
 
@@ -28,10 +28,15 @@ function Mainnavigation() {
             setOpen(true);
           }}
         >
-         <img src="/ham.png" alt="open"/>
+          <img src="/ham.png" alt="open" />
         </button>
         <h1 className="main-navigation__title">
-          <Link to="/">Tour 🌴</Link>
+          <Link to="/">
+            Tour{" "}
+            <span role="img" aria-label="jsx-a11y/accessible-emoji">
+              🌴
+            </span>
+          </Link>
         </h1>
         <nav className="main-navigation__header-nav">
           <Navlinks />

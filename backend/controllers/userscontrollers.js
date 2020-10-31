@@ -9,7 +9,6 @@ const getUsers = async (req, res, next) => {
   try {
     users = await User.find({}, "-password");
   } catch (error) {
-    console.log(error);
     return next(new httpError("an error occurred", 500));
   }
   res.json({ users: users.map((u) => u.toObject({ getters: true })) });
@@ -17,7 +16,6 @@ const getUsers = async (req, res, next) => {
 
 const signUp = async (req, res, next) => {
   const errors = validationResult(req);
-  console.log(req.body);
   if (!errors.isEmpty()) {
     return next(new httpError("Enter the fields correctly", 422));
   }
@@ -51,7 +49,6 @@ const signUp = async (req, res, next) => {
   try {
     await user.save();
   } catch (error) {
-    console.log(error);
     return next(new httpError("Sign Up failed", 500));
   }
   let token;
@@ -86,7 +83,6 @@ const logIn = async (req, res, next) => {
   let isValidPassword = false;
   try {
     isValidPassword = await bcrypt.compare(password, existingUser.password);
-    console.log(isValidPassword);
   } catch (err) {
     return next(new httpError("Something went wrong", 500));
   }

@@ -8,7 +8,12 @@ function LandingPage() {
           <img src="/camp.png" alt="camp" />
         </div>
         <div className="second-landing">
-          <h1 className="landing-title">TOUR 🌴</h1>
+          <h1 className="landing-title">
+            TOUR{" "}
+            <span role="img" aria-label="jsx-a11y/accessible-emoji">
+              🌴
+            </span>
+          </h1>
         </div>
       </div>
     </>

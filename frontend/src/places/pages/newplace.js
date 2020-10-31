@@ -64,7 +64,6 @@ const NewPlace = () => {
         if (!response.ok) {
           throw new Error(responseData.message);
         }
-        console.log(responseData);
         setisLoading(false);
         setisSuccess(true);
       } catch (err) {
