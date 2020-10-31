@@ -25,8 +25,11 @@
   .nav-links a:active,
   .nav-links a.active {
     background: #f8df00;
+    background: rgb(59, 58, 58);
     border-color: #292929;
     color: #292929;
+    color: #f7f7f7;
+    border-radius: 40px;
   }
   
   .nav-links button {

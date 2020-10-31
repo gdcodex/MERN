@@ -28,12 +28,10 @@ function Mainnavigation() {
             setOpen(true);
           }}
         >
-          <span></span>
-          <span></span>
-          <span></span>
+         <img src="/ham.png" alt="open"/>
         </button>
         <h1 className="main-navigation__title">
-          <Link to="/">Your Places</Link>
+          <Link to="/">Tour 🌴</Link>
         </h1>
         <nav className="main-navigation__header-nav">
           <Navlinks />

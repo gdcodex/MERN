@@ -5,12 +5,13 @@
 }
 
 html {
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Righteous', cursive;
 }
 
 body {
   margin: 0;
   background: #4d4d4d;
+  background: #ecece4;
 }
 
 .slide-in-left-enter {

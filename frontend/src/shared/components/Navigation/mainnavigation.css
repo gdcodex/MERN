@@ -10,20 +10,23 @@
     cursor: pointer;
   }
   
-  .main-navigation__menu-btn span {
+  .main-navigation__menu-btn  img{
     display: block;
     width: 3rem;
-    height: 2.5px;
-    background: white;
+    
+    
   }
+
   
   .main-navigation__title {
     color: white;
+    
   }
   
   .main-navigation__title a {
     text-decoration: none;
     color: white;
+    color:rgb(59, 58, 58);
   }
   
   .main-navigation__header-nav {
