@@ -12,6 +12,7 @@ import {
   VALIDATOR_MINLENGTH,
   VALIDATOR_REQUIRE,
 } from "../../shared/Util/validators";
+import './auth.css';
 
 function Auth() {
   const auth = useContext(AuthContext);
@@ -142,7 +143,7 @@ function Auth() {
           }}
         />
       )}
-      <Card className="place-form">
+      <Card className="auth-form">
         {isLoading && <LoadingSpinner asOverlay />}
         <h2>{isLoggedInMode ? "LOGIN" : "SIGNUP"}</h2>
         <form onSubmit={onSubmitHandler}>

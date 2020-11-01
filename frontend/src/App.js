@@ -26,7 +26,7 @@ function App() {
   const { isLoading, isError, resetError, sendRequest } = useHttp();
 
   useEffect(() => {
-    sendRequest("http://localhost:5000/api/users")
+    sendRequest(process.env.REACT_APP_BACKEND_URL + "/users")
       .then((data) => {
         setloadedUsers(data.users);
       })

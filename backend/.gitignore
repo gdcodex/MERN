@@ -12,7 +12,6 @@ nodemon.json
 /build
 
 # misc
-/uploads
 .DS_Store
 .env.local
 .env.development.local
