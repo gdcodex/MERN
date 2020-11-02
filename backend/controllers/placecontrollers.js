@@ -1,4 +1,3 @@
-const fs = require("fs");
 const httpError = require("../models/errors");
 const mongoose = require("mongoose");
 const { validationResult } = require("express-validator");
@@ -60,7 +59,7 @@ const createPlace = async (req, res, next) => {
     return next(new httpError("Please fill all the fields properly", 422));
   }
 
-  const { title, description, address } = req.body;
+  const { title, description, address, imageUrl } = req.body;
 
   let coordinates;
   try {
@@ -73,7 +72,7 @@ const createPlace = async (req, res, next) => {
     description,
     location: coordinates,
     address,
-    image: req.file.path,
+    imageUrl,
     creator:req.userData.userId
   });
   //check if user exists
@@ -158,7 +157,7 @@ const deletePlace = async (req, res, next) => {
     return next(new httpError('Your are not authorized to delete this place',401));
   }
 
-  const placePath = place.image;
+ 
 
   try {
     const sess = await mongoose.startSession();
@@ -171,9 +170,7 @@ const deletePlace = async (req, res, next) => {
     console.log(error);
     return next(new httpError("couldn't delete the place", 500));
   }
-  fs.unlink(placePath, (err) => {
-    console.log(err);
-  });
+ 
 
   res.status(200).json({ message: "the place has been deleted" });
 };
