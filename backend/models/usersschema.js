@@ -8,7 +8,8 @@ const usersSchema = new Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true, minlength:6},
   imageUrl:{type:String, required:true},
-  places:[{type: mongoose.Types.ObjectId, required: true, ref:"Place" }]
+  places:[{type: mongoose.Types.ObjectId, required: true, ref:"Place" }],
+  stories:[{type: mongoose.Types.ObjectId, required: true, ref:"Story" }]
 });
 usersSchema.plugin(uniqueValidator); //validation for unique email id
 

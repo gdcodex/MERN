@@ -9,7 +9,7 @@ module.exports = (req, res, next) => {
       throw new Error("Authentication failed");
     }
     const decodedToken= jwt.verify(token,process.env.JWT_Key)
-    req.userData = { userId: decodedToken.userId}  //attaching data
+    req.userData = { userId: decodedToken.userId , imageUrl:decodedToken.imageUrl}  //attaching data
     next()
   } catch (err) {
     return next(new httpError("Authentication failed", 403));

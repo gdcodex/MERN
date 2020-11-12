@@ -7,6 +7,7 @@ const bodyParser = require("body-parser");
 const httpError = require("./models/errors");
 const placesRoutes = require("./routes/placesroutes");
 const userRoutes = require("./routes/userroutes");
+const storiesRoutes = require('./routes/storiesroutes')
 
 const app = express();
 app.use(cors());
@@ -27,6 +28,7 @@ app.use((req, res, next) => {
 //routes use
 app.use("/api/places", placesRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/stories",storiesRoutes );
 
 //error
 app.use((req, res, next) => {

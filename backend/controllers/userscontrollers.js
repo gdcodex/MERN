@@ -46,6 +46,7 @@ const signUp = async (req, res, next) => {
     password: hashPassword,
     imageUrl,
     places: [],
+    stories:[]
   });
   try {
     await user.save();
@@ -55,7 +56,7 @@ const signUp = async (req, res, next) => {
   let token;
   try {
     token = jwt.sign(
-      { userId: user.id, email: user.email },
+      { userId: user.id, email: user.email, imageUrl: user.imageUrl },
       process.env.JWT_Key,
       { expiresIn: "1h" }
     );
@@ -100,7 +101,7 @@ const logIn = async (req, res, next) => {
   let token;
   try {
     token = jwt.sign(
-      { userId: existingUser.id, email: existingUser.email },
+      { userId: existingUser.id, email: existingUser.email, imageUrl: existingUser.imageUrl },
       process.env.JWT_Key,
       { expiresIn: "1h" }
     );
